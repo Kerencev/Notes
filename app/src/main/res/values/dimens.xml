@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_main_fragment">4dp</dimen>
+    <dimen name="width_text_date">100dp</dimen>
+    <dimen name="margin_start_text_notes_list">4dp</dimen>
+</resources>
