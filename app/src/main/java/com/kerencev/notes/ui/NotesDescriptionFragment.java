@@ -64,7 +64,11 @@ public class NotesDescriptionFragment extends Fragment {
                         getParentFragmentManager()
                                 .setFragmentResult(ARG_PARAM1, bundle);
                     } else {
-                        NotesActivity.show(requireContext(), note);
+                        NotesFragment nf = new NotesFragment();
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, NotesFragment.newInstance(note))
+                                .addToBackStack("details")
+                                .commit();
                     }
                 }
             });

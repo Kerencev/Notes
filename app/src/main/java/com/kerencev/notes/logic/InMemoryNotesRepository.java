@@ -13,6 +13,8 @@ public class InMemoryNotesRepository {
 
     private Context context;
 
+    private ArrayList<Note> result;
+
     private InMemoryNotesRepository(Context context) {
         this.context = context;
     }
