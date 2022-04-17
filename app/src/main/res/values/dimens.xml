@@ -6,4 +6,5 @@
     <dimen name="padding_bar">8dp</dimen>
     <dimen name="widt_height_bar_icon">28dp</dimen>
     <dimen name="height_bar">60dp</dimen>
+    <dimen name="size_pic">100dp</dimen>
 </resources>
