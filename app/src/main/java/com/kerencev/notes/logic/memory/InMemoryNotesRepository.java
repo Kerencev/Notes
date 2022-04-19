@@ -1,10 +1,10 @@
-package com.kerencev.notes.logic;
+package com.kerencev.notes.logic.memory;
 
 import android.content.Context;
 
-import java.text.SimpleDateFormat;
+import com.kerencev.notes.logic.Note;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class InMemoryNotesRepository {
@@ -31,15 +31,24 @@ public class InMemoryNotesRepository {
         return result;
     }
 
-    public void add(Note note) {
-        result.add(0, note);
+    public void loadAll(List<Note> notes) {
+        if (result.size() == 0) {
+            result.addAll(notes);
+        }
     }
 
-    public void delete(Note note) {
+    public void add(int index, Note note) {
+        result.add(index, note);
+    }
+
+    public int delete(Note note) {
+        int index = result.indexOf(note);
         result.remove(note);
+        return index;
     }
 
     public boolean contains(Note note) {
         return result.contains(note);
     }
+
 }

@@ -6,11 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.kerencev.notes.R;
+import com.kerencev.notes.logic.memory.Data;
 
 public class MainActivity extends AppCompatActivity implements ToolbarHolder {
 
@@ -26,6 +29,10 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
         navigationView = findViewById(R.id.navigation);
 
         setNavigationClicks();
+
+        SharedPreferences sPref = NotesDescriptionFragment.getMySharedPreferences();
+        sPref = getSharedPreferences("Store_notes", Context.MODE_PRIVATE);
+        Data.load(sPref, this);
     }
 
     @Override
