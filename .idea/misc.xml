@@ -8,6 +8,7 @@
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/background_note.xml" value="0.1755" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1755" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.1755" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1275" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_note_add_24.xml" value="0.1755" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_save_24.xml" value="0.1755" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1755" />
@@ -19,9 +20,11 @@
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/fragment_note_choose.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/fragment_notes.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/fragment_notes_description.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/fragment_settings.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/item_nav_header.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/item_note.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/item_note_delete.xml" value="0.2064814814814815" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/item_note_delete.xml" value="0.264" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout/item_note_grid.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/menu/menu_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/menu/menu_note.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/menu/navigation_drawer.xml" value="0.2064814814814815" />

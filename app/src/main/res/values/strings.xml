@@ -18,4 +18,8 @@
     <string name="enter_name">Введите название</string>
     <string name="save">Сохранить</string>
     <string name="choose_notes">Выберите</string>
+    <string name="settings">Настройки</string>
+    <string name="style_of_displaying_notes">Стиль отображения заметок</string>
+    <string name="linear">Линейный</string>
+    <string name="table">Таблица</string>
 </resources>

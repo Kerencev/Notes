@@ -1,6 +1,5 @@
 package com.kerencev.notes.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -10,14 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -27,9 +26,9 @@ import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
 import com.kerencev.notes.logic.Note;
+import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotesDescriptionFragment extends Fragment {
@@ -124,38 +123,37 @@ public class NotesDescriptionFragment extends Fragment {
             changeNoteName(view);
         }
 
-        LinearLayout layoutView = view.findViewById(R.id.container);
+        RecyclerView recyclerView = view.findViewById(R.id.container);
 
-        for (Note note : notes) {
+        RecyclerView.LayoutManager layoutManager = null;
 
-            View itemView = getLayoutInflater().inflate(R.layout.item_note_delete, layoutView, false);
-
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @SuppressLint("ResourceType")
-                @Override
-                public boolean onLongClick(View view) {
-                    BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
-                    return true;
-                }
-            });
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showNote(note);
-                }
-            });
-
-            TextView name = itemView.findViewById(R.id.title);
-            TextView text = itemView.findViewById(R.id.text);
-            TextView date = itemView.findViewById(R.id.date);
-
-            name.setText(note.getName());
-            text.setText(note.getDescription());
-            date.setText(note.getDate());
-
-            layoutView.addView(itemView);
+        if (StyleOfNotes.getINSTANCE(requireContext()).getStyle().equals(StyleOfNotes.STYLE_1)) {
+            layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        } else {
+            layoutManager = new GridLayoutManager(requireContext(), 3);
         }
+
+        recyclerView.setLayoutManager(layoutManager);
+
+        NotesAdapter adapter = new NotesAdapter();
+
+        recyclerView.setAdapter(adapter);
+
+        adapter.setData(notes);
+
+        adapter.notifyDataSetChanged();
+
+        adapter.setOnNoteClicked(new NotesAdapter.OnNoteClicked() {
+            @Override
+            public void onNoteClicked(Note note) {
+                showNote(note);
+            }
+
+            @Override
+            public void onLongNoteClicked(Note note) {
+                BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
+            }
+        });
     }
 
     private void setOnClickNewNote(View view) {

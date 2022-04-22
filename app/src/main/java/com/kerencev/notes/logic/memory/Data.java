@@ -1,13 +1,10 @@
 package com.kerencev.notes.logic.memory;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Note;
 
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 public class Data {
 
     private static final String KEY_SPREF = "KEY_SPREF";
+    private static final String KEY_SPREF_STYLE = "KEY_SPREF_STYLE";
 
     public static void save(SharedPreferences sharedPreferences, String notesJson) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -35,5 +33,15 @@ public class Data {
         }
     }
 
+    public static void saveStyle(SharedPreferences sharedPreferences, String style) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_SPREF_STYLE, style);
+        editor.apply();
+    }
 
+    public static void loadStyle(SharedPreferences sharedPreferences, Context context) {
+        if (sharedPreferences.contains(KEY_SPREF_STYLE)) {
+            StyleOfNotes.getINSTANCE(context).setStyle(sharedPreferences.getString(KEY_SPREF_STYLE, StyleOfNotes.STYLE_1));
+        }
+    }
 }

@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 public class MyDate {
 
     public static String getDate() {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd.MM");
         java.util.Date date = new java.util.Date();
         return formatter.format(date);
     }

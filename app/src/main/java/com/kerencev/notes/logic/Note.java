@@ -50,7 +50,9 @@ public class Note implements Parcelable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        StringBuilder sb = new StringBuilder(name);
+        sb.setCharAt(0, Character.toUpperCase(name.charAt(0)));
+        this.name = sb.toString();
     }
 
     public String getDescription() {
