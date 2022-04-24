@@ -7,12 +7,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -38,6 +42,10 @@ public class NotesDescriptionFragment extends Fragment {
     private Toolbar toolbar;
     private LinearLayout layoutView;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +58,11 @@ public class NotesDescriptionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initList(view);
         toolbar = view.findViewById(R.id.bar_main_add);
-        setAddToolbar();
+        setAddToolbar(view);
+
+        if (requireActivity() instanceof ToolbarHolder) {
+            ((ToolbarHolder) requireActivity()).setToolbar(toolbar);
+        }
     }
 
     private void initList(View view) {
@@ -81,14 +93,24 @@ public class NotesDescriptionFragment extends Fragment {
         }
     }
 
-    private void setAddToolbar() {
+    private void setAddToolbar(View view) {
         Note note = new Note(null, null, null);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-
+        view.findViewById(R.id.action_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showNote(note);
+            }
+        });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_search) {
+                    Toast.makeText(requireContext(), "search", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
             }
         });
     }

@@ -32,7 +32,7 @@ public class InMemoryNotesRepository {
     }
 
     public void add(Note note) {
-        result.add(note);
+        result.add(0, note);
     }
 
     public void delete(Note note) {

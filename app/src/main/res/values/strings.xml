@@ -5,4 +5,8 @@
     <string name="notes">Заметки</string>
     <string name="name">Название</string>
     <string name="enter_your_text">Введите текст</string>
+    <string name="search">Поиск</string>
+    <string name="drawer_open">Drawer open</string>
+    <string name="drawer_close">Drawer close</string>
+    <string name="info_dev">By Kerencev\nVer: 1.0.0</string>
 </resources>
