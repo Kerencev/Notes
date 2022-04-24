@@ -13,30 +13,33 @@ public class InMemoryNotesRepository {
 
     private Context context;
 
+    private static ArrayList<Note> result;
+
     private InMemoryNotesRepository(Context context) {
         this.context = context;
     }
 
     public static InMemoryNotesRepository getINSTANCE(Context context) {
         if (INSTANCE == null) {
+            result = new ArrayList<>();
             INSTANCE = new InMemoryNotesRepository(context);
         }
         return INSTANCE;
     }
 
     public List<Note> getAll() {
-        ArrayList<Note> result = new ArrayList<>();
-        SimpleDateFormat formater = new SimpleDateFormat("dd.MM.yy HH:mm");
-        Date date = new Date();
-
-        for (int i = 1; i <= 5; i++) {
-            result.add(new Note("Заметка" + i, "Описание" + i, formater.format(date)));
-        }
-
         return result;
     }
 
     public void add(Note note) {
+        result.add(note);
+    }
 
+    public void delete(Note note) {
+        result.remove(note);
+    }
+
+    public boolean contains(Note note) {
+        return result.contains(note);
     }
 }
