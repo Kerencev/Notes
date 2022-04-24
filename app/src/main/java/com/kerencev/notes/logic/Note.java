@@ -7,7 +7,7 @@ public class Note implements Parcelable {
 
     private String name;
     private String Description;
-    private String date;
+    private final String date;
 
     public Note(String name, String description, String date) {
         this.name = name;
@@ -50,7 +50,9 @@ public class Note implements Parcelable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        StringBuilder sb = new StringBuilder(name);
+        sb.setCharAt(0, Character.toUpperCase(name.charAt(0)));
+        this.name = sb.toString();
     }
 
     public String getDescription() {
@@ -64,10 +66,5 @@ public class Note implements Parcelable {
     public String getDate() {
         return date;
     }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
 }
 

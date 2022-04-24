@@ -7,4 +7,6 @@
     <dimen name="widt_height_bar_icon">28dp</dimen>
     <dimen name="height_bar">60dp</dimen>
     <dimen name="size_pic">100dp</dimen>
+    <dimen name="size_radio_button">32dp</dimen>
+    <dimen name="margin_bottom_bar">12dp</dimen>
 </resources>

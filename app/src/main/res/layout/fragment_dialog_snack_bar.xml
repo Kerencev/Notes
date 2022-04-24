@@ -5,14 +5,14 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/margin_main_fragment"
-    android:layout_marginVertical="@dimen/margin_main_fragment"
-    app:cardCornerRadius="@dimen/margin_bottom_bar">
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/yellow"
+        android:layout_marginHorizontal="@dimen/margin_main_fragment"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/background_note"
         android:padding="@dimen/margin_main_fragment">
 
         <TextView
@@ -20,9 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_start_text_notes_list"
-            android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toStartOf="@+id/date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Заметка 1" />
@@ -32,21 +30,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_start_text_notes_list"
-            android:maxLines="3"
+            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="ывиарыавр ываирлывиа nfdjnjfjdnjdfjjndsdfsdfsdfdfssdfdsdfsdfnjjnsjdfnj ывиаоиыва dfdfdfjnjjdfjdjfnjnsdfjnfdsnfnnsjdfnjdsnjfndsjnfjdsnfjnsdjfnjnjdnfjnsdnsdjfnjsdnjsfnjsdfsdfdsfsdfsdfsdfsdfsdfsdfnjsndf" />
+            tools:text="ывиарыавр ываирлывиа ывиаоиыва" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/width_text_date"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_start_text_notes_list"
+            android:gravity="end"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="10.04" />
+            app:layout_constraintTop_toTopOf="@id/text"
+            tools:text="10.04.20 21:00" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

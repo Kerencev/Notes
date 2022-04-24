@@ -1,49 +1,81 @@
 package com.kerencev.notes.ui;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.kerencev.notes.R;
-import com.kerencev.notes.logic.InMemoryNotesRepository;
 import com.kerencev.notes.logic.MyDate;
+import com.kerencev.notes.logic.memory.Data;
+import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
 import com.kerencev.notes.logic.Note;
+import com.kerencev.notes.logic.memory.StyleOfNotes;
+import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class NotesDescriptionFragment extends Fragment {
 
+    private static final String INDEX_NOTE = "INDEX_NOTE";
+    private static final String NEW_NAME = "NEW_NAME";
+
     public static final String ARG_PARAM1 = "param1";
     public static final String ARG_PARAM2 = "param2";
     private Toolbar toolbar;
-    private LinearLayout layoutView;
+    private static SharedPreferences sharedPreferences;
+    private String notesJson;
+    List<Note> notes;
+
+    /**
+     * Метод для передачи фрагменту заметки и ее индекса для восстановления после удаления
+     *
+     * @param note        - заметка, удаление которой можно отменить
+     * @param indexOfNote - индекс заметки, для восстановления в том же месте
+     */
+    public static NotesDescriptionFragment newInstance(Note note, int indexOfNote) {
+        Bundle args = new Bundle();
+        args.putParcelable(NotesFragment.ARG_NOTE, note);
+        args.putInt(INDEX_NOTE, indexOfNote);
+        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /**
+     * Метод для передачи фрагменту заметки и нового названия
+     *
+     * @param note - заметка, у которой меняем название
+     * @param name - новое название
+     */
+    public static NotesDescriptionFragment newInstance(Note note, String name) {
+        Bundle args = new Bundle();
+        args.putParcelable(NotesFragment.ARG_NOTE, note);
+        args.putString(NEW_NAME, name);
+        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        sharedPreferences = requireActivity().getSharedPreferences("Store_notes", Context.MODE_PRIVATE);
         super.onCreate(savedInstanceState);
     }
 
@@ -58,43 +90,74 @@ public class NotesDescriptionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initList(view);
         toolbar = view.findViewById(R.id.bar_main_add);
-        setAddToolbar(view);
+        setOnClickNewNote(view);
 
         if (requireActivity() instanceof ToolbarHolder) {
             ((ToolbarHolder) requireActivity()).setToolbar(toolbar);
         }
+
+        if (getArguments() != null && getArguments().containsKey(NotesFragment.ARG_NOTE)) {
+            showSnackBartoCancelRemove(view);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        notesJson = new Gson().toJson(notes);
+        Data.save(sharedPreferences, notesJson);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        notesJson = new Gson().toJson(notes);
+        Data.save(sharedPreferences, notesJson);
+        super.onDestroy();
     }
 
     private void initList(View view) {
 
-        List<Note> notes = InMemoryNotesRepository.getINSTANCE(requireContext()).getAll();
-        layoutView = view.findViewById(R.id.container);
+        notes = InMemoryNotesRepository.getINSTANCE(requireContext()).getAll();
 
-        for (Note note : notes) {
-            View itemView = getLayoutInflater().inflate(R.layout.item_note, layoutView, false);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showNote(note);
-                }
-            });
-
-            TextView name = itemView.findViewById(R.id.title);
-            TextView text = itemView.findViewById(R.id.text);
-            TextView date = itemView.findViewById(R.id.date);
-
-
-            name.setText(note.getName());
-            text.setText(note.getDescription());
-            date.setText(note.getDate());
-
-            layoutView.addView(itemView);
+        if (getArguments() != null && getArguments().containsKey(NEW_NAME)) {
+            changeNoteName(view);
         }
+
+        RecyclerView recyclerView = view.findViewById(R.id.container);
+
+        RecyclerView.LayoutManager layoutManager = null;
+
+        if (StyleOfNotes.getINSTANCE(requireContext()).getStyle().equals(StyleOfNotes.STYLE_1)) {
+            layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        } else {
+            layoutManager = new GridLayoutManager(requireContext(), 3);
+        }
+
+        recyclerView.setLayoutManager(layoutManager);
+
+        NotesAdapter adapter = new NotesAdapter();
+
+        recyclerView.setAdapter(adapter);
+
+        adapter.setData(notes);
+
+        adapter.notifyDataSetChanged();
+
+        adapter.setOnNoteClicked(new NotesAdapter.OnNoteClicked() {
+            @Override
+            public void onNoteClicked(Note note) {
+                showNote(note);
+            }
+
+            @Override
+            public void onLongNoteClicked(Note note) {
+                BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
+            }
+        });
     }
 
-    private void setAddToolbar(View view) {
-        Note note = new Note(null, null, null);
+    private void setOnClickNewNote(View view) {
+        Note note = new Note(null, null, MyDate.getDate());
 
         view.findViewById(R.id.action_add).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,5 +190,38 @@ public class NotesDescriptionFragment extends Fragment {
                     .addToBackStack("details")
                     .commit();
         }
+    }
+
+    public static SharedPreferences getMySharedPreferences() {
+        return sharedPreferences;
+    }
+
+    private void showSnackBartoCancelRemove(View view) {
+        Note note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
+        int indexOfNote = getArguments().getInt(INDEX_NOTE);
+
+        getArguments().clear();
+
+        Snackbar.make(view, "Заметка '" + note.getName() + "' удалена", Snackbar.LENGTH_SHORT)
+                .setAction(R.string.cancel, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        InMemoryNotesRepository.getINSTANCE(requireContext()).add(indexOfNote, note);
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new NotesDescriptionFragment())
+                                .commit();
+                    }
+                }).show();
+    }
+
+    private void changeNoteName(View view) {
+        Note note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
+        String name = getArguments().getString(NEW_NAME);
+        for (Note n : notes) {
+            if (note.equals(n)) {
+                n.setName(name);
+            }
+        }
+        getArguments().clear();
     }
 }

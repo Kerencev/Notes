@@ -9,4 +9,17 @@
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
     <string name="info_dev">By Kerencev\nVer: 1.0.0</string>
+    <string name="delete_note">Удалить заметку?</string>
+    <string name="ок">Ok</string>
+    <string name="delete">Удалить</string>
+    <string name="rename">Переименовать</string>
+    <string name="redact">Редактировать</string>
+    <string name="cancel">Отмена</string>
+    <string name="enter_name">Введите название</string>
+    <string name="save">Сохранить</string>
+    <string name="choose_notes">Выберите</string>
+    <string name="settings">Настройки</string>
+    <string name="style_of_displaying_notes">Стиль отображения заметок</string>
+    <string name="linear">Линейный</string>
+    <string name="table">Таблица</string>
 </resources>

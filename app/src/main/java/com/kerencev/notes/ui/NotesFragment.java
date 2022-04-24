@@ -1,9 +1,6 @@
 package com.kerencev.notes.ui;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -13,25 +10,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kerencev.notes.R;
-import com.kerencev.notes.logic.InMemoryNotesRepository;
+import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
 import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.NoteName;
 
 public class NotesFragment extends Fragment {
 
-    private static final String ARG_NOTE = "ARG_NOTE";
+    public static final String ARG_NOTE = "ARG_NOTE";
 
     private TextView title;
     private EditText text;
@@ -39,7 +33,6 @@ public class NotesFragment extends Fragment {
     private Note note;
 
     public static NotesFragment newInstance(Note note) {
-
         Bundle args = new Bundle();
         args.putParcelable(ARG_NOTE, note);
 
@@ -62,7 +55,6 @@ public class NotesFragment extends Fragment {
         setClicksToolbar();
 
         if (getArguments() != null && getArguments().containsKey(ARG_NOTE)) {
-
             note = getArguments().getParcelable(ARG_NOTE);
             showNote(note);
         }
@@ -102,15 +94,22 @@ public class NotesFragment extends Fragment {
                         return true;
 
                     case R.id.action_delete:
+                        InMemoryNotesRepository.getINSTANCE(requireContext()).delete(note);
+                        if (text.getText().toString().length() > 0) {
+                            if (title.getText().toString().length() > 0) {
+                                note.setName(title.getText().toString());
+                            } else {
+                                note.setName(NoteName.setDefaultName(text));
+                            }
 
-                        if (note.getDescription() != null) {
-                            InMemoryNotesRepository.getINSTANCE(requireContext()).delete(note);
+                            note.setDescription(text.getText().toString());
 
-                            Toast.makeText(requireContext(), "Заметка " + " '" + note.getName() + "' " + "удалена", Toast.LENGTH_SHORT).show();
+                            getParentFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, 0))
+                                    .commit();
                         }
 
                         hideKeyboard();
-                        getParentFragmentManager().popBackStack();
                         return true;
                 }
                 return false;
@@ -143,7 +142,7 @@ public class NotesFragment extends Fragment {
                 note = new Note(NoteName.setDefaultName(text), text.getText().toString(), MyDate.getDate());
             }
 
-            InMemoryNotesRepository.getINSTANCE(requireContext()).add(note);
+            InMemoryNotesRepository.getINSTANCE(requireContext()).add(0, note);
         }
 
         if (text.getText().length() > 0) {

@@ -10,7 +10,7 @@
         android:id="@+id/bar"
         android:layout_width="0dp"
         android:layout_height="@dimen/height_bar"
-        android:background="#FFECD6D6"
+        android:background="@color/status_bar"
         app:layout_constraintBottom_toTopOf="@+id/container2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,76 +21,51 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:menu="@menu/menu_note"
-            app:navigationIcon="@drawable/ic_baseline_arrow_back_24">
-
-
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <ImageView
-            android:id="@+id/bar_back"
-            android:layout_width="@dimen/widt_height_bar_icon"
-            android:layout_height="@dimen/widt_height_bar_icon"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/bar_delete"
-            android:layout_width="@dimen/widt_height_bar_icon"
-            android:layout_height="@dimen/widt_height_bar_icon"
-            android:src="@drawable/ic_baseline_delete_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/bar_save"
-            android:layout_width="@dimen/widt_height_bar_icon"
-            android:layout_height="@dimen/widt_height_bar_icon"
-            android:src="@drawable/ic_baseline_save_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/container2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/padding_bar"
-        android:background="@drawable/background_note"
+        app:cardCornerRadius="@dimen/margin_bottom_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar">
 
-        <EditText
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:hint="@string/name"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/yellow">
 
-        <EditText
-            android:id="@+id/text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="@string/enter_your_text"
-            android:padding="@dimen/padding_bar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="@string/name"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="@string/enter_your_text"
+                android:padding="@dimen/padding_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
