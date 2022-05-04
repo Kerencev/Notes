@@ -2,13 +2,13 @@ package com.kerencev.notes.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +22,10 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.kerencev.notes.R;
+import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.memory.Data;
-import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
+import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
@@ -39,43 +40,40 @@ public class NotesDescriptionFragment extends Fragment {
     public static final String ARG_PARAM1 = "param1";
     public static final String ARG_PARAM2 = "param2";
     private Toolbar toolbar;
-    private static SharedPreferences sharedPreferences;
-    private String notesJson;
     List<Note> notes;
 
-    /**
-     * Метод для передачи фрагменту заметки и ее индекса для восстановления после удаления
-     *
-     * @param note        - заметка, удаление которой можно отменить
-     * @param indexOfNote - индекс заметки, для восстановления в том же месте
-     */
-    public static NotesDescriptionFragment newInstance(Note note, int indexOfNote) {
-        Bundle args = new Bundle();
-        args.putParcelable(NotesFragment.ARG_NOTE, note);
-        args.putInt(INDEX_NOTE, indexOfNote);
-        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /**
-     * Метод для передачи фрагменту заметки и нового названия
-     *
-     * @param note - заметка, у которой меняем название
-     * @param name - новое название
-     */
-    public static NotesDescriptionFragment newInstance(Note note, String name) {
-        Bundle args = new Bundle();
-        args.putParcelable(NotesFragment.ARG_NOTE, note);
-        args.putString(NEW_NAME, name);
-        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    /**
+//     * Метод для передачи фрагменту заметки и ее индекса для восстановления после удаления
+//     *
+//     * @param note        - заметка, удаление которой можно отменить
+//     * @param indexOfNote - индекс заметки, для восстановления в том же месте
+//     */
+//    public static NotesDescriptionFragment newInstance(Note note, int indexOfNote) {
+//        Bundle args = new Bundle();
+//        args.putParcelable(NotesFragment.ARG_NOTE, note);
+//        args.putInt(INDEX_NOTE, indexOfNote);
+//        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+//
+//    /**
+//     * Метод для передачи фрагменту заметки и нового названия
+//     *
+//     * @param note - заметка, у которой меняем название
+//     * @param name - новое название
+//     */
+//    public static NotesDescriptionFragment newInstance(Note note, String name) {
+//        Bundle args = new Bundle();
+//        args.putParcelable(NotesFragment.ARG_NOTE, note);
+//        args.putString(NEW_NAME, name);
+//        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        sharedPreferences = requireActivity().getSharedPreferences("Store_notes", Context.MODE_PRIVATE);
         super.onCreate(savedInstanceState);
     }
 
@@ -96,32 +94,16 @@ public class NotesDescriptionFragment extends Fragment {
             ((ToolbarHolder) requireActivity()).setToolbar(toolbar);
         }
 
-        if (getArguments() != null && getArguments().containsKey(NotesFragment.ARG_NOTE)) {
-            showSnackBartoCancelRemove(view);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        notesJson = new Gson().toJson(notes);
-        Data.save(sharedPreferences, notesJson);
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        notesJson = new Gson().toJson(notes);
-        Data.save(sharedPreferences, notesJson);
-        super.onDestroy();
+//        if (getArguments() != null && getArguments().containsKey(NotesFragment.ARG_NOTE)) {
+//            showSnackBartoCancelRemove(view);
+//        }
     }
 
     private void initList(View view) {
 
-        notes = InMemoryNotesRepository.getINSTANCE(requireContext()).getAll();
-
-        if (getArguments() != null && getArguments().containsKey(NEW_NAME)) {
-            changeNoteName(view);
-        }
+//        if (getArguments() != null && getArguments().containsKey(NEW_NAME)) {
+//            changeNoteName(view);
+//        }
 
         RecyclerView recyclerView = view.findViewById(R.id.container);
 
@@ -139,9 +121,20 @@ public class NotesDescriptionFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        adapter.setData(notes);
+        Dependencies.getNotesRepository().getAll(new Callback<List<Note>>() {
+            @Override
+            public void onSuccess(List<Note> data) {
+                adapter.setData(data);
+                adapter.notifyDataSetChanged();
+            }
 
-        adapter.notifyDataSetChanged();
+            @Override
+            public void onError(Throwable exception) {
+
+            }
+        });
+
+        notifyAdapter(adapter);
 
         adapter.setOnNoteClicked(new NotesAdapter.OnNoteClicked() {
             @Override
@@ -156,12 +149,31 @@ public class NotesDescriptionFragment extends Fragment {
         });
     }
 
+    private void notifyAdapter(NotesAdapter adapter) {
+
+        getParentFragmentManager().setFragmentResultListener(Data.KEY_RESULT_CHANGE_RECYCLER, getViewLifecycleOwner(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                if (result.containsKey(Data.KEY_BUNDLE_ADD_NEW_NOTE)) {
+                    adapter.add(result.getParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE));
+                    adapter.notifyItemInserted(0);
+                } else if (result.containsKey(Data.KEY_BUNDLE_DELETE_NOTE)) {
+                    int indexOfRemoved = adapter.delete(result.getParcelable(Data.KEY_BUNDLE_DELETE_NOTE));
+                    adapter.notifyItemRemoved(indexOfRemoved);
+                } else if (result.containsKey(Data.KEY_BUNDLE_UPDATE_NOTE)) {
+                    int indexOfRemoved = adapter.updateNote(result.getParcelable(Data.KEY_BUNDLE_UPDATE_NOTE));
+                    adapter.notifyItemChanged(indexOfRemoved);
+                }
+            }
+        });
+    }
+
     private void setOnClickNewNote(View view) {
-        Note note = new Note(null, null, MyDate.getDate());
 
         view.findViewById(R.id.action_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Note note = new Note(null, null, null, MyDate.getDate());
                 showNote(note);
             }
         });
@@ -179,39 +191,15 @@ public class NotesDescriptionFragment extends Fragment {
     }
 
     private void showNote(Note note) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ARG_PARAM2, note);
-            getParentFragmentManager()
-                    .setFragmentResult(ARG_PARAM1, bundle);
-        } else {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, NotesFragment.newInstance(note))
-                    .addToBackStack("details")
-                    .commit();
-        }
-    }
-
-    public static SharedPreferences getMySharedPreferences() {
-        return sharedPreferences;
+        getParentFragmentManager().beginTransaction()
+                .hide(this)
+                .add(R.id.fragment_container, NotesFragment.newInstance(note))
+                .addToBackStack("details")
+                .commit();
     }
 
     private void showSnackBartoCancelRemove(View view) {
-        Note note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
-        int indexOfNote = getArguments().getInt(INDEX_NOTE);
 
-        getArguments().clear();
-
-        Snackbar.make(view, "Заметка '" + note.getName() + "' удалена", Snackbar.LENGTH_SHORT)
-                .setAction(R.string.cancel, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        InMemoryNotesRepository.getINSTANCE(requireContext()).add(indexOfNote, note);
-                        getParentFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new NotesDescriptionFragment())
-                                .commit();
-                    }
-                }).show();
     }
 
     private void changeNoteName(View view) {

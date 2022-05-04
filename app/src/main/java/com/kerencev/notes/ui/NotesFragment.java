@@ -15,10 +15,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kerencev.notes.R;
-import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
+import com.kerencev.notes.logic.Callback;
+import com.kerencev.notes.logic.memory.Data;
+import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.NoteName;
@@ -58,18 +59,6 @@ public class NotesFragment extends Fragment {
             note = getArguments().getParcelable(ARG_NOTE);
             showNote(note);
         }
-
-        setMyCallback();
-
-        getParentFragmentManager()
-                .setFragmentResultListener(NotesDescriptionFragment.ARG_PARAM1, getViewLifecycleOwner(), new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        Note note = result.getParcelable(NotesDescriptionFragment.ARG_PARAM2);
-
-                        showNote(note);
-                    }
-                });
     }
 
     private void setClicksToolbar() {
@@ -87,28 +76,36 @@ public class NotesFragment extends Fragment {
 
                 switch (item.getItemId()) {
                     case R.id.action_save:
+                        if (note.getDescription() != null) {
+                            updateNote();
+                        } else {
+                            saveNewNote();
+                        }
 
-                        saveNewNote();
                         hideKeyboard();
                         getParentFragmentManager().popBackStack();
                         return true;
 
                     case R.id.action_delete:
-                        InMemoryNotesRepository.getINSTANCE(requireContext()).delete(note);
-                        if (text.getText().toString().length() > 0) {
-                            if (title.getText().toString().length() > 0) {
-                                note.setName(title.getText().toString());
-                            } else {
-                                note.setName(NoteName.setDefaultName(text));
-                            }
+                        if (note.getDescription() != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(Data.KEY_BUNDLE_DELETE_NOTE, note);
+                            getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
 
-                            note.setDescription(text.getText().toString());
+                            Dependencies.getNotesRepository().removeNote(note, new Callback<Void>() {
+                                @Override
+                                public void onSuccess(Void data) {
 
-                            getParentFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, 0))
-                                    .commit();
+                                }
+
+                                @Override
+                                public void onError(Throwable exception) {
+
+                                }
+                            });
                         }
 
+                        getParentFragmentManager().popBackStack();
                         hideKeyboard();
                         return true;
                 }
@@ -132,32 +129,53 @@ public class NotesFragment extends Fragment {
         imm.hideSoftInputFromWindow(text.getWindowToken(), 0);
     }
 
-    private void saveNewNote() {
-        if (text.getText().length() > 0 && !InMemoryNotesRepository.getINSTANCE(requireContext()).contains(note)) {
-            Note note;
-
-            if (title.getText().length() > 0) {
-                note = new Note(title.getText().toString(), text.getText().toString(), MyDate.getDate());
-            } else {
-                note = new Note(NoteName.setDefaultName(text), text.getText().toString(), MyDate.getDate());
-            }
-
-            InMemoryNotesRepository.getINSTANCE(requireContext()).add(0, note);
-        }
-
-        if (text.getText().length() > 0) {
-            note.setDescription(text.getText().toString());
-        }
-    }
-
-    private void setMyCallback() {
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+    private void updateNote() {
+        Dependencies.getNotesRepository().updateNote(note, note.getName(), text.getText().toString(), new Callback<Note>() {
             @Override
-            public void handleOnBackPressed() {
-                saveNewNote();
-                getParentFragmentManager().popBackStack();
+            public void onSuccess(Note data) {
+
             }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), callback);
+
+            @Override
+            public void onError(Throwable exception) {
+
+            }
+        });
+
+        note.setDescription(text.getText().toString());
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Data.KEY_BUNDLE_UPDATE_NOTE, note);
+
+        getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
     }
+
+    private void saveNewNote() {
+
+        Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), new Callback<Note>() {
+            @Override
+            public void onSuccess(Note data) {
+
+            }
+
+            @Override
+            public void onError(Throwable exception) {
+
+            }
+        });
+
+        if (title.getText().length() == 0) {
+            note.setName(NoteName.setDefaultName(text.getText().toString()));
+        } else {
+            note.setName(title.getText().toString());
+        }
+
+        note.setDescription(text.getText().toString());
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE, note);
+
+        getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+    }
+
 }

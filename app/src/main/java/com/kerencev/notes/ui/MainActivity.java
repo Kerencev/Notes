@@ -33,10 +33,6 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
 
         setNavigationClicks();
 
-        SharedPreferences sPref = NotesDescriptionFragment.getMySharedPreferences();
-        sPref = getSharedPreferences("Store_notes", Context.MODE_PRIVATE);
-        Data.load(sPref, this);
-
         sPrefForStyle = getSharedPreferences("Store_style", MODE_PRIVATE);
         Data.loadStyle(sPrefForStyle, this);
     }

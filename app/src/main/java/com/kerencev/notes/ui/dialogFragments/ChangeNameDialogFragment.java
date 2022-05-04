@@ -20,7 +20,7 @@ public class ChangeNameDialogFragment extends DialogFragment {
 
     public static ChangeNameDialogFragment newInstance(Note note) {
         Bundle args = new Bundle();
-        args.putParcelable(NotesFragment.ARG_NOTE, note);
+//        args.putParcelable(NotesFragment.ARG_NOTE, note);
         ChangeNameDialogFragment fragment = new ChangeNameDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -45,7 +45,7 @@ public class ChangeNameDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, newName.getText().toString()))
+//                        .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, newName.getText().toString()))
                         .commit();
                 dismiss();
             }

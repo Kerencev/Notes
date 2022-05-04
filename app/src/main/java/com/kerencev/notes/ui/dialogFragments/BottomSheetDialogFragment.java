@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kerencev.notes.R;
+import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Note;
-import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
+import com.kerencev.notes.logic.memory.Data;
+import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.ui.NotesDescriptionFragment;
 import com.kerencev.notes.ui.NotesFragment;
 
@@ -57,11 +59,25 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int indexOfNote = InMemoryNotesRepository.getINSTANCE(requireContext()).delete(note);
+
+                Dependencies.getNotesRepository().removeNote(note, new Callback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable exception) {
+
+                    }
+                });
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_DELETE_NOTE, note);
+
+                getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+
                 dismiss();
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, indexOfNote))
-                        .commit();
             }
         });
 
@@ -76,7 +92,7 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
 
     private void showNote(Note note) {
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, NotesFragment.newInstance(note))
+//                .replace(R.id.fragment_container, NotesFragment.newInstance(note))
                 .addToBackStack("details")
                 .commit();
     }

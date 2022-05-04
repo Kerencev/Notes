@@ -3,35 +3,14 @@ package com.kerencev.notes.logic.memory;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.kerencev.notes.logic.Note;
-
-import java.util.List;
-
 public class Data {
 
-    private static final String KEY_SPREF = "KEY_SPREF";
     private static final String KEY_SPREF_STYLE = "KEY_SPREF_STYLE";
+    public static final String KEY_RESULT_CHANGE_RECYCLER = "KEY_RESULT_CHANGE_RECYCLER";
 
-    public static void save(SharedPreferences sharedPreferences, String notesJson) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_SPREF, notesJson);
-        editor.apply();
-    }
-
-    public static void load(SharedPreferences sharedPreferences, Context context) {
-
-        if (sharedPreferences.contains(KEY_SPREF)) {
-            String httpParamJSONList = sharedPreferences.getString(KEY_SPREF, "");
-
-            List<Note> notes1 =
-                    new Gson().fromJson(httpParamJSONList, new TypeToken<List<Note>>() {
-                    }.getType());
-
-            InMemoryNotesRepository.getINSTANCE(context).loadAll(notes1);
-        }
-    }
+    public static final String KEY_BUNDLE_ADD_NEW_NOTE = "KEY_BUNDLE_ADD_NEW_NOTE";
+    public static final String KEY_BUNDLE_DELETE_NOTE = "KEY_BUNDLE_DELETE_NOTE";
+    public static final String KEY_BUNDLE_UPDATE_NOTE = "KEY_BUNDLE_UPDATE_NOTE";
 
     public static void saveStyle(SharedPreferences sharedPreferences, String style) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
