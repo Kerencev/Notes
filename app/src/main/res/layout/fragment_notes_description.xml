@@ -32,25 +32,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_add"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/widt_height_bar_icon"
         android:src="@drawable/ic_baseline_note_add_24"
-        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_bottom_bar"
-            android:src="@drawable/ic_baseline_note_add_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-    </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

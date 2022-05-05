@@ -87,7 +87,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         holder.name.setText(note.getName());
         holder.text.setText(note.getDescription());
-        holder.date.setText(note.getDate());
+        
+        if (!StyleOfNotes.getINSTANCE(holder.context).isIsHasDate()) {
+            holder.date.setVisibility(View.GONE);
+        } else {
+            holder.date.setText(note.getDate());
+        }
     }
 
     @Override

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
 
         sPrefForStyle = getSharedPreferences("Store_style", MODE_PRIVATE);
         Data.loadStyle(sPrefForStyle, this);
+        Data.loadIsHasDate(sPrefForStyle, this);
     }
 
     @Override
@@ -82,11 +83,13 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
     protected void onStop() {
         super.onStop();
         Data.saveStyle(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getStyle());
+        Data.saveIsHasDate(sPrefForStyle, StyleOfNotes.getINSTANCE(this).isIsHasDate());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Data.saveStyle(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getStyle());
+        Data.saveIsHasDate(sPrefForStyle, StyleOfNotes.getINSTANCE(this).isIsHasDate());
     }
 }

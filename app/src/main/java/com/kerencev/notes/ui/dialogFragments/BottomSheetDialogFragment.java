@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.card.MaterialCardView;
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Note;
@@ -44,9 +45,9 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
             note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
         }
 
-        LinearLayout edit = view.findViewById(R.id.action_edit);
-        LinearLayout delete = view.findViewById(R.id.action_delete);
-        LinearLayout rename = view.findViewById(R.id.action_rename);
+        MaterialCardView edit = view.findViewById(R.id.action_edit);
+        MaterialCardView delete = view.findViewById(R.id.action_delete);
+        MaterialCardView rename = view.findViewById(R.id.action_rename);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override

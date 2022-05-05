@@ -20,6 +20,7 @@ public class StyleOfNotes {
     }
 
     private static String style = "STYLE_1";
+    private static boolean isHasDate = true;
     public static final String STYLE_1 = "STYLE_1";
     public static final String STYLE_2 = "STYLE_2";
 
@@ -29,5 +30,13 @@ public class StyleOfNotes {
 
     public String getStyle() {
         return style;
+    }
+
+    public boolean isIsHasDate() {
+        return isHasDate;
+    }
+
+    public void setIsHasDate(boolean isHasDate) {
+        StyleOfNotes.isHasDate = isHasDate;
     }
 }

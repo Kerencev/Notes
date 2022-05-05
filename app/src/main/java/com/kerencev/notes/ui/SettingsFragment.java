@@ -3,6 +3,7 @@ package com.kerencev.notes.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -11,10 +12,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 
 public class SettingsFragment extends Fragment {
+
+    private SwitchMaterial switchMaterial;
 
     private Toolbar toolbar;
 
@@ -24,7 +28,7 @@ public class SettingsFragment extends Fragment {
     private ImageView buttonStyle1;
     private ImageView buttonStyle2;
 
-    SettingsFragment() {
+    public SettingsFragment() {
         super(R.layout.fragment_settings);
     }
 
@@ -54,9 +58,20 @@ public class SettingsFragment extends Fragment {
                 changeRadioButtonForStyles(buttonStyle2, buttonStyle1);
             }
         });
+
+        switchMaterial.setChecked(StyleOfNotes.getINSTANCE(requireContext()).isIsHasDate());
+
+        switchMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                StyleOfNotes.getINSTANCE(requireContext()).setIsHasDate(b);
+            }
+        });
     }
 
     private void init(View view) {
+        switchMaterial = view.findViewById(R.id.switch_has_date);
+
         toolbar = view.findViewById(R.id.toolbar);
 
         style1 = view.findViewById(R.id.style1);
