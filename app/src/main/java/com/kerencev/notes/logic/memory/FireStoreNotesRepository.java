@@ -89,6 +89,7 @@ public class FireStoreNotesRepository implements NotesRepository {
         data.put("DATE", new Date());
 
         String finalName = name;
+
         firestore.collection(NOTES)
                 .add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

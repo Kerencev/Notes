@@ -89,8 +89,4 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
         super.onDestroy();
         Data.saveStyle(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getStyle());
     }
-
-    public static SharedPreferences getsPrefForStyle() {
-        return sPrefForStyle;
-    }
 }

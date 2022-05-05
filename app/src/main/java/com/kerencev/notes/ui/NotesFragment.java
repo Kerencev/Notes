@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
 import android.view.MenuItem;
@@ -130,10 +131,18 @@ public class NotesFragment extends Fragment {
     }
 
     private void updateNote() {
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+
         Dependencies.getNotesRepository().updateNote(note, note.getName(), text.getText().toString(), new Callback<Note>() {
             @Override
             public void onSuccess(Note data) {
+                note.setDescription(text.getText().toString());
 
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_UPDATE_NOTE, note);
+
+                fragmentManager.setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
             }
 
             @Override
@@ -141,21 +150,31 @@ public class NotesFragment extends Fragment {
 
             }
         });
-
-        note.setDescription(text.getText().toString());
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Data.KEY_BUNDLE_UPDATE_NOTE, note);
-
-        getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
     }
 
     private void saveNewNote() {
 
+        FragmentManager fragmentManager = getParentFragmentManager();
+
         Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), new Callback<Note>() {
             @Override
             public void onSuccess(Note data) {
+                String id = data.getId();
 
+                note.setID(id);
+
+                if (title.getText().length() == 0) {
+                    note.setName(NoteName.setDefaultName(text.getText().toString()));
+                } else {
+                    note.setName(title.getText().toString());
+                }
+
+                note.setDescription(text.getText().toString());
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE, note);
+
+                fragmentManager.setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
             }
 
             @Override
@@ -163,19 +182,6 @@ public class NotesFragment extends Fragment {
 
             }
         });
-
-        if (title.getText().length() == 0) {
-            note.setName(NoteName.setDefaultName(text.getText().toString()));
-        } else {
-            note.setName(title.getText().toString());
-        }
-
-        note.setDescription(text.getText().toString());
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE, note);
-
-        getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
     }
 
 }

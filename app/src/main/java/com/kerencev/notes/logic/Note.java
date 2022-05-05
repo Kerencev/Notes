@@ -10,7 +10,7 @@ public class Note implements Parcelable {
     private String name;
     private String Description;
     private final String date;
-    private final String id;
+    private String id;
 
     public Note(String id, String name, String description, String date) {
         this.id = id;
@@ -75,6 +75,10 @@ public class Note implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
     }
 
     @Override
