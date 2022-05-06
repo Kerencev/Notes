@@ -48,6 +48,7 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
         MaterialCardView edit = view.findViewById(R.id.action_edit);
         MaterialCardView delete = view.findViewById(R.id.action_delete);
         MaterialCardView rename = view.findViewById(R.id.action_rename);
+        MaterialCardView color = view.findViewById(R.id.action_color);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +88,17 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
             public void onClick(View view) {
                 dismiss();
                 ChangeNameDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
+            }
+        });
+
+        color.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR, note);
+
+                getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+                dismiss();
             }
         });
     }

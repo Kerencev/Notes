@@ -13,7 +13,7 @@
     <string name="ок">OK</string>
     <string name="delete">Удалить</string>
     <string name="rename">Переименовать</string>
-    <string name="redact">Ред..</string>
+    <string name="redact">Редак..</string>
     <string name="cancel">Отмена</string>
     <string name="enter_name">Введите название</string>
     <string name="save">Сохранить</string>
@@ -23,4 +23,5 @@
     <string name="linear">Линейный</string>
     <string name="table">Таблица</string>
     <string name="show_date">Отображать дату создания</string>
+    <string name="color">Цвет</string>
 </resources>

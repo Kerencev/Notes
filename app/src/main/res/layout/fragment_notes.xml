@@ -30,12 +30,13 @@
         android:layout_height="0dp"
         android:layout_margin="@dimen/padding_bar"
         app:cardCornerRadius="@dimen/margin_bottom_bar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/yellow">
@@ -67,5 +68,23 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/height_bar"
+        android:background="@color/bottom_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container2">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/bottom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:menu="@menu/bottom_menu_note"
+            app:navigationIcon="@drawable/ic_baseline_palette_24" />
+    </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

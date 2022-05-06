@@ -14,6 +14,8 @@ public class Data {
     public static final String KEY_BUNDLE_DELETE_NOTE = "KEY_BUNDLE_DELETE_NOTE";
     public static final String KEY_BUNDLE_UPDATE_NOTE = "KEY_BUNDLE_UPDATE_NOTE";
 
+    public static final String KEY_BUNDLE_SHOW_BOTTOM_BAR = "KEY_BUNDLE_SHOW_BOTTOM_BAR";
+
     public static void saveStyle(SharedPreferences sharedPreferences, String style) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_SPREF_STYLE, style);

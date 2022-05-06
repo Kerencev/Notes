@@ -7,6 +7,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
@@ -24,6 +25,7 @@ import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.NoteName;
+import com.kerencev.notes.logic.memory.StyleOfNotes;
 
 public class NotesFragment extends Fragment {
 
@@ -33,6 +35,10 @@ public class NotesFragment extends Fragment {
     private EditText text;
     private Toolbar toolbar;
     private Note note;
+
+    private Toolbar bottomToolbar;
+
+    private ConstraintLayout constraintLayout;
 
     public static NotesFragment newInstance(Note note) {
         Bundle args = new Bundle();
@@ -54,11 +60,37 @@ public class NotesFragment extends Fragment {
         title = view.findViewById(R.id.title);
         text = view.findViewById(R.id.text);
         toolbar = view.findViewById(R.id.toolbar);
+        bottomToolbar = view.findViewById(R.id.bottom_toolbar);
+        constraintLayout = view.findViewById(R.id.container3);
         setClicksToolbar();
+
+        setClicksBottomToolbar(view);
 
         if (getArguments() != null && getArguments().containsKey(ARG_NOTE)) {
             note = getArguments().getParcelable(ARG_NOTE);
             showNote(note);
+        }
+
+        setRightColor(view);
+    }
+
+    private void setRightColor(View view) {
+        switch (note.getColor()) {
+            case R.color.yellow:
+                constraintLayout.setBackgroundResource(R.color.yellow);
+                break;
+
+            case R.color.blue:
+                constraintLayout.setBackgroundResource(R.color.blue);
+                break;
+
+            case R.color.green:
+                constraintLayout.setBackgroundResource(R.color.green);
+                break;
+
+            case R.color.red:
+                constraintLayout.setBackgroundResource(R.color.red);
+                break;
         }
     }
 
@@ -115,6 +147,39 @@ public class NotesFragment extends Fragment {
         });
     }
 
+    private void setClicksBottomToolbar(View view) {
+
+        bottomToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+
+                    case R.id.action_yellow:
+                        view.findViewById(R.id.container3).setBackgroundResource(R.color.yellow);
+                        note.setColor(StyleOfNotes.COLOR_YELLOW);
+                        return true;
+
+                    case R.id.action_blue:
+                        view.findViewById(R.id.container3).setBackgroundResource(R.color.blue);
+                        note.setColor(StyleOfNotes.COLOR_BLUE);
+                        return true;
+
+                    case R.id.action_green:
+                        view.findViewById(R.id.container3).setBackgroundResource(R.color.green);
+                        note.setColor(StyleOfNotes.COLOR_GREEN);
+                        return true;
+
+                    case R.id.action_red:
+                        view.findViewById(R.id.container3).setBackgroundResource(R.color.red);
+                        note.setColor(StyleOfNotes.COLOR_RED);
+                        return true;
+                }
+
+                return false;
+            }
+        });
+    }
+
     private void showNote(Note note) {
         if (note.getName() != null) {
             toolbar.setTitle(note.getName());
@@ -156,7 +221,7 @@ public class NotesFragment extends Fragment {
 
         FragmentManager fragmentManager = getParentFragmentManager();
 
-        Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), new Callback<Note>() {
+        Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), note.getColor(), new Callback<Note>() {
             @Override
             public void onSuccess(Note data) {
                 String id = data.getId();

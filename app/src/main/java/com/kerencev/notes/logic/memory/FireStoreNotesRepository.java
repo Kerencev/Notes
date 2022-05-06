@@ -30,6 +30,7 @@ public class FireStoreNotesRepository implements NotesRepository {
     private static final String KEY_TITLE = "title";
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_CREATED_AT = "createdAt";
+    private static final String KEY_COLOR = "KEY_COLOR";
 
     private static final String NOTES = "notes";
 
@@ -57,8 +58,9 @@ public class FireStoreNotesRepository implements NotesRepository {
                                     String title = documentSnapshot.getString(KEY_TITLE);
                                     String message = documentSnapshot.getString(KEY_MESSAGE);
                                     String date = documentSnapshot.getString(KEY_CREATED_AT);
+                                    String color = documentSnapshot.getString(KEY_COLOR);
 
-                                    result.add(new Note(id, title, message, date));
+                                    result.add(new Note(id, title, message, date, Integer.parseInt(color)));
                                 }
 
                                 handler.post(new Runnable() {
@@ -74,7 +76,7 @@ public class FireStoreNotesRepository implements NotesRepository {
     }
 
     @Override
-    public void addNote(String title, String message, Callback<Note> callback) {
+    public void addNote(String title, String message, int color, Callback<Note> callback) {
 
         HashMap<String, Object> data = new HashMap<>();
 
@@ -86,6 +88,7 @@ public class FireStoreNotesRepository implements NotesRepository {
         data.put(KEY_TITLE, name);
         data.put(KEY_MESSAGE, message);
         data.put(KEY_CREATED_AT, MyDate.getDate());
+        data.put(KEY_COLOR, String.valueOf(color));
         data.put("DATE", new Date());
 
         String finalName = name;
@@ -95,7 +98,7 @@ public class FireStoreNotesRepository implements NotesRepository {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        callback.onSuccess(new Note(documentReference.getId(), finalName, message, MyDate.getDate()));
+                        callback.onSuccess(new Note(documentReference.getId(), finalName, message, MyDate.getDate(), color));
                     }
                 });
     }
@@ -119,6 +122,7 @@ public class FireStoreNotesRepository implements NotesRepository {
         HashMap<String, Object> data = new HashMap<>();
         data.put(KEY_TITLE, title);
         data.put(KEY_MESSAGE, message);
+        data.put(KEY_COLOR, String.valueOf(note.getColor()));
 
         firestore.collection(NOTES)
                 .document(note.getId())
@@ -127,7 +131,7 @@ public class FireStoreNotesRepository implements NotesRepository {
                     @Override
                     public void onSuccess(Void unused) {
 
-                        Note result = new Note(note.getId(), title, message, note.getDate());
+                        Note result = new Note(note.getId(), title, message, note.getDate(), note.getColor());
                         callback.onSuccess(result);
                     }
                 });

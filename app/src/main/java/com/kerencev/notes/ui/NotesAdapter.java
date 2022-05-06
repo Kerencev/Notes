@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kerencev.notes.R;
@@ -85,13 +86,36 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         Note note = data.get(position);
 
+        setRightColor(note, holder);
+
         holder.name.setText(note.getName());
         holder.text.setText(note.getDescription());
-        
+
         if (!StyleOfNotes.getINSTANCE(holder.context).isIsHasDate()) {
             holder.date.setVisibility(View.GONE);
         } else {
             holder.date.setText(note.getDate());
+        }
+    }
+
+    private void setRightColor(Note note, NotesViewHolder holder) {
+        switch (note.getColor()) {
+
+            case StyleOfNotes.COLOR_YELLOW:
+                holder.constraintLayout.setBackgroundResource(StyleOfNotes.COLOR_YELLOW);
+                break;
+
+            case StyleOfNotes.COLOR_BLUE:
+                holder.constraintLayout.setBackgroundResource(StyleOfNotes.COLOR_BLUE);
+                break;
+
+            case StyleOfNotes.COLOR_GREEN:
+                holder.constraintLayout.setBackgroundResource(StyleOfNotes.COLOR_GREEN);
+                break;
+
+            case StyleOfNotes.COLOR_RED:
+                holder.constraintLayout.setBackgroundResource(StyleOfNotes.COLOR_RED);
+                break;
         }
     }
 
@@ -107,6 +131,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         TextView text;
         TextView date;
 
+        ConstraintLayout constraintLayout;
+
         private void setContext(Context context) {
             this.context = context;
         }
@@ -117,6 +143,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             name = itemView.findViewById(R.id.title);
             text = itemView.findViewById(R.id.text);
             date = itemView.findViewById(R.id.date);
+            constraintLayout = itemView.findViewById(R.id.container_card);
 
             if (StyleOfNotes.getINSTANCE(context).getStyle().equals(StyleOfNotes.STYLE_1)) {
                 itemView.setOnClickListener(new View.OnClickListener() {

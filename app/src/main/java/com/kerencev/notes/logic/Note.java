@@ -3,6 +3,8 @@ package com.kerencev.notes.logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.kerencev.notes.logic.memory.StyleOfNotes;
+
 import java.util.Objects;
 
 public class Note implements Parcelable {
@@ -10,19 +12,22 @@ public class Note implements Parcelable {
     private String name;
     private String Description;
     private final String date;
+    private int color;
     private String id;
 
-    public Note(String id, String name, String description, String date) {
+    public Note(String id, String name, String description, String date, int color) {
         this.id = id;
         this.name = name;
         Description = description;
         this.date = date;
+        this.color = color;
     }
 
     protected Note(Parcel in) {
         name = in.readString();
         Description = in.readString();
         date = in.readString();
+        color = in.readInt();
         id = in.readString();
     }
 
@@ -31,6 +36,7 @@ public class Note implements Parcelable {
         dest.writeString(name);
         dest.writeString(Description);
         dest.writeString(date);
+        dest.writeInt(color);
         dest.writeString(id);
     }
 
@@ -81,17 +87,25 @@ public class Note implements Parcelable {
         this.id = id;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return Objects.equals(name, note.name) && Objects.equals(Description, note.Description) && Objects.equals(date, note.date) && Objects.equals(id, note.id);
+        return color == note.color && Objects.equals(name, note.name) && Objects.equals(Description, note.Description) && Objects.equals(date, note.date) && Objects.equals(id, note.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, Description, date, id);
+        return Objects.hash(name, Description, date, color, id);
     }
 }
 

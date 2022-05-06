@@ -2,6 +2,8 @@ package com.kerencev.notes.logic.memory;
 
 import android.content.Context;
 
+import com.kerencev.notes.R;
+
 public class StyleOfNotes {
 
     private static StyleOfNotes INSTANCE;
@@ -23,6 +25,11 @@ public class StyleOfNotes {
     private static boolean isHasDate = true;
     public static final String STYLE_1 = "STYLE_1";
     public static final String STYLE_2 = "STYLE_2";
+
+    public static final int COLOR_YELLOW = R.color.yellow;
+    public static final int COLOR_BLUE = R.color.blue;
+    public static final int COLOR_GREEN = R.color.green;
+    public static final int COLOR_RED = R.color.red;
 
     public void setStyle(String st) {
         style = st;

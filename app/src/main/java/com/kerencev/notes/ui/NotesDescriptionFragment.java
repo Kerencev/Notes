@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -41,6 +42,10 @@ public class NotesDescriptionFragment extends Fragment {
     public static final String ARG_PARAM2 = "param2";
     private Toolbar toolbar;
     List<Note> notes;
+
+    private NotesAdapter adapter;
+
+    private ConstraintLayout bottomChangeColor;
 
 //    /**
 //     * Метод для передачи фрагменту заметки и ее индекса для восстановления после удаления
@@ -86,6 +91,9 @@ public class NotesDescriptionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        bottomChangeColor = view.findViewById(R.id.constraint_bottom_bar);
+
         initList(view);
         toolbar = view.findViewById(R.id.bar_main_add);
         setOnClickNewNote(view);
@@ -117,7 +125,7 @@ public class NotesDescriptionFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
 
-        NotesAdapter adapter = new NotesAdapter();
+        adapter = new NotesAdapter();
 
         recyclerView.setAdapter(adapter);
 
@@ -134,7 +142,7 @@ public class NotesDescriptionFragment extends Fragment {
             }
         });
 
-        notifyAdapter(adapter);
+        notifyAdapter(adapter, view);
 
         adapter.setOnNoteClicked(new NotesAdapter.OnNoteClicked() {
             @Override
@@ -147,9 +155,10 @@ public class NotesDescriptionFragment extends Fragment {
                 BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
             }
         });
+
     }
 
-    private void notifyAdapter(NotesAdapter adapter) {
+    private void notifyAdapter(NotesAdapter adapter, View view) {
 
         getParentFragmentManager().setFragmentResultListener(Data.KEY_RESULT_CHANGE_RECYCLER, getViewLifecycleOwner(), new FragmentResultListener() {
             @Override
@@ -163,7 +172,66 @@ public class NotesDescriptionFragment extends Fragment {
                 } else if (result.containsKey(Data.KEY_BUNDLE_UPDATE_NOTE)) {
                     int indexOfRemoved = adapter.updateNote(result.getParcelable(Data.KEY_BUNDLE_UPDATE_NOTE));
                     adapter.notifyItemChanged(indexOfRemoved);
+                } else if (result.containsKey(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR)) {
+                    bottomChangeColor.setVisibility(View.VISIBLE);
+                    setOnClickChangeColor(view, result.getParcelable(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR));
                 }
+            }
+        });
+    }
+
+    private void setOnClickChangeColor(View view, Note note) {
+
+        view.findViewById(R.id.action_color_yellow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.yellow);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_color_blue).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.blue);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_color_green).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.green);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_color_red).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.red);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dependencies.getNotesRepository().updateNote(note, note.getName(), note.getDescription(), new Callback<Note>() {
+                    @Override
+                    public void onSuccess(Note data) {
+                        bottomChangeColor.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable exception) {
+
+                    }
+                });
             }
         });
     }
@@ -173,7 +241,7 @@ public class NotesDescriptionFragment extends Fragment {
         view.findViewById(R.id.action_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Note note = new Note(null, null, null, MyDate.getDate());
+                Note note = new Note(null, null, null, MyDate.getDate(), StyleOfNotes.COLOR_YELLOW);
                 showNote(note);
             }
         });
