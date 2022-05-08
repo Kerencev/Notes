@@ -10,8 +10,8 @@
     <color name="gray">#DBD7D2</color>
     <color name="status_bar">#ECD6D6</color>
     <color name="yellow">#90E1CC4F</color>
-    <color name="blue">#5A61FF</color>
-    <color name="red">#FF6162</color>
-    <color name="green">#81FF8B</color>
+    <color name="blue">#6CD1FF</color>
+    <color name="red">#FF7D79</color>
+    <color name="green">#88FFD6</color>
     <color name="bottom_bar">#FFFFFF</color>
 </resources>

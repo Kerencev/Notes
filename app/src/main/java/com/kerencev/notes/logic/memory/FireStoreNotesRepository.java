@@ -27,24 +27,24 @@ public class FireStoreNotesRepository implements NotesRepository {
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    private static final String KEY_TITLE = "title";
-    private static final String KEY_MESSAGE = "message";
-    private static final String KEY_CREATED_AT = "createdAt";
-    private static final String KEY_COLOR = "KEY_COLOR";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_CREATED_AT = "createdAt";
+    public static final String KEY_COLOR = "KEY_COLOR";
 
-    private static final String NOTES = "notes";
+    public static final String NOTES = "notes";
 
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
-    public void getAll(Callback<List<Note>> callback) {
+    public void getAll(String repository, Query.Direction direction, Callback<List<Note>> callback) {
 
         executor.execute(new Runnable() {
             @Override
             public void run() {
 
-                firestore.collection(NOTES)
-                        .orderBy("DATE", Query.Direction.DESCENDING)
+                firestore.collection(repository)
+                        .orderBy("DATE", direction)
                         .get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
@@ -59,8 +59,9 @@ public class FireStoreNotesRepository implements NotesRepository {
                                     String message = documentSnapshot.getString(KEY_MESSAGE);
                                     String date = documentSnapshot.getString(KEY_CREATED_AT);
                                     String color = documentSnapshot.getString(KEY_COLOR);
+                                    Date dateForSort = documentSnapshot.getDate("DATE");
 
-                                    result.add(new Note(id, title, message, date, Integer.parseInt(color)));
+                                    result.add(new Note(id, title, message, date, Integer.parseInt(color), dateForSort));
                                 }
 
                                 handler.post(new Runnable() {
@@ -76,7 +77,7 @@ public class FireStoreNotesRepository implements NotesRepository {
     }
 
     @Override
-    public void addNote(String title, String message, int color, Callback<Note> callback) {
+    public void addNote(String title, String message, int color, Date date, String myDate, Callback<Note> callback) {
 
         HashMap<String, Object> data = new HashMap<>();
 
@@ -87,9 +88,9 @@ public class FireStoreNotesRepository implements NotesRepository {
 
         data.put(KEY_TITLE, name);
         data.put(KEY_MESSAGE, message);
-        data.put(KEY_CREATED_AT, MyDate.getDate());
+        data.put(KEY_CREATED_AT, myDate);
         data.put(KEY_COLOR, String.valueOf(color));
-        data.put("DATE", new Date());
+        data.put("DATE", date);
 
         String finalName = name;
 
@@ -98,7 +99,7 @@ public class FireStoreNotesRepository implements NotesRepository {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        callback.onSuccess(new Note(documentReference.getId(), finalName, message, MyDate.getDate(), color));
+                        callback.onSuccess(new Note(documentReference.getId(), finalName, message, MyDate.getDate(), color, new Date()));
                     }
                 });
     }
@@ -131,7 +132,7 @@ public class FireStoreNotesRepository implements NotesRepository {
                     @Override
                     public void onSuccess(Void unused) {
 
-                        Note result = new Note(note.getId(), title, message, note.getDate(), note.getColor());
+                        Note result = new Note(note.getId(), title, message, note.getDate(), note.getColor(), note.getDateForSort());
                         callback.onSuccess(result);
                     }
                 });

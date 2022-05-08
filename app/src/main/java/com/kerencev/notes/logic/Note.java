@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class Note implements Parcelable {
@@ -15,13 +16,17 @@ public class Note implements Parcelable {
     private int color;
     private String id;
 
-    public Note(String id, String name, String description, String date, int color) {
+    private Date dateForSort;
+
+    public Note(String id, String name, String description, String date, int color, Date dateForSort) {
         this.id = id;
         this.name = name;
         Description = description;
         this.date = date;
         this.color = color;
+        this.dateForSort = dateForSort;
     }
+
 
     protected Note(Parcel in) {
         name = in.readString();
@@ -95,17 +100,25 @@ public class Note implements Parcelable {
         this.color = color;
     }
 
+    public Date getDateForSort() {
+        return dateForSort;
+    }
+
+    public void setDateForSort(Date dateForSort) {
+        this.dateForSort = dateForSort;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return color == note.color && Objects.equals(name, note.name) && Objects.equals(Description, note.Description) && Objects.equals(date, note.date) && Objects.equals(id, note.id);
+        return color == note.color && Objects.equals(name, note.name) && Objects.equals(Description, note.Description) && Objects.equals(date, note.date) && Objects.equals(id, note.id) && Objects.equals(dateForSort, note.dateForSort);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, Description, date, color, id);
+        return Objects.hash(name, Description, date, color, id, dateForSort);
     }
 }
 

@@ -5,6 +5,8 @@ import android.view.ContentInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +20,9 @@ import com.kerencev.notes.logic.memory.StyleOfNotes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Filterable {
 
     interface OnNoteClicked {
         void onNoteClicked(Note note);
@@ -30,13 +33,24 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     private OnNoteClicked onNoteClicked;
 
     private List<Note> data = new ArrayList<>();
+    private List<Note> dataFull;
 
     public void setData(Collection<Note> notes) {
         data.addAll(notes);
+        dataFull = new ArrayList<>(data);
     }
 
-    public void add(Note note) {
+    public void clearData() {
+        data.clear();
+    }
+
+    public void addFirst(Note note) {
         data.add(0, note);
+    }
+
+    public int addLast(Note note) {
+        data.add(note);
+        return data.size() - 1;
     }
 
     public int delete(Note note) {
@@ -123,6 +137,40 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public int getItemCount() {
         return data.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filterNote;
+    }
+
+    private Filter filterNote = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            String searchText = charSequence.toString().toLowerCase();
+            List<Note> tempList = new ArrayList<>();
+            if (searchText.length() == 0 || searchText.isEmpty()) {
+                tempList.addAll(dataFull);
+            } else {
+                for (Note note : dataFull) {
+                    if (note.getName().toLowerCase().contains(searchText)) {
+                        tempList.add(note);
+                    }
+                }
+            }
+
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = tempList;
+
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            data.clear();
+            data.addAll((Collection<? extends Note>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     class NotesViewHolder extends RecyclerView.ViewHolder {
 

@@ -20,6 +20,10 @@ import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.ui.NotesDescriptionFragment;
 import com.kerencev.notes.ui.NotesFragment;
 
+/**
+ * Диалог появляется, если нажата кнопка сменить имя
+ */
+
 public class ChangeNameDialogFragment extends DialogFragment {
 
     public static ChangeNameDialogFragment newInstance(Note note) {

@@ -18,7 +18,7 @@ import com.kerencev.notes.logic.memory.StyleOfNotes;
 
 public class MainActivity extends AppCompatActivity implements ToolbarHolder {
 
-    private static SharedPreferences sPrefForStyle;
+    private SharedPreferences sPrefForStyle;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
         sPrefForStyle = getSharedPreferences("Store_style", MODE_PRIVATE);
         Data.loadStyle(sPrefForStyle, this);
         Data.loadIsHasDate(sPrefForStyle, this);
+        Data.loadIsSaveNotes(sPrefForStyle, this);
+        Data.loadDirection(sPrefForStyle, this);
     }
 
     @Override
@@ -72,6 +74,13 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
                                 .commit();
                         drawerLayout.close();
                         return true;
+
+                    case R.id.trash:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new TrashFragment())
+                                .commit();
+                        drawerLayout.close();
+                        return true;
                 }
 
                 return false;
@@ -84,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
         super.onStop();
         Data.saveStyle(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getStyle());
         Data.saveIsHasDate(sPrefForStyle, StyleOfNotes.getINSTANCE(this).isIsHasDate());
+        Data.saveIsSaveNotes(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getIsSaveNotes());
+        Data.saveDirection(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getDirection(), this);
     }
 
     @Override
@@ -91,5 +102,7 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
         super.onDestroy();
         Data.saveStyle(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getStyle());
         Data.saveIsHasDate(sPrefForStyle, StyleOfNotes.getINSTANCE(this).isIsHasDate());
+        Data.saveIsSaveNotes(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getIsSaveNotes());
+        Data.saveDirection(sPrefForStyle, StyleOfNotes.getINSTANCE(this).getDirection(), this);
     }
 }

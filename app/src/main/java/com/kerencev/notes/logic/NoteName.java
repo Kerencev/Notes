@@ -1,6 +1,8 @@
 package com.kerencev.notes.logic;
 
-import android.widget.EditText;
+/**
+ * Класс для установки дефолтного имени у заметки, если имя при создании не было введено
+ */
 
 public class NoteName {
     public static String setDefaultName(String text) {

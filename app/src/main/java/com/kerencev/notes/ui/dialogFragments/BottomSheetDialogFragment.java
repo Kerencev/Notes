@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +15,12 @@ import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;
+import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.NotesFragment;
+
+/**
+ * Фрагмент появляется при удержании одной из заметок
+ */
 
 public class BottomSheetDialogFragment extends com.google.android.material.bottomsheet.BottomSheetDialogFragment {
 
@@ -78,6 +82,11 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
 
                     }
                 });
+
+                // Проверка, нужно ли добавлять заметку в корзину
+                if (StyleOfNotes.getINSTANCE(requireContext()).getIsSaveNotes()) {
+                    Dependencies.getNotesTrashRepository().addNote(note);
+                }
 
                 dismiss();
             }

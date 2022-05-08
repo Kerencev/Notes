@@ -37,7 +37,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/widt_height_bar_icon"
-        android:src="@drawable/ic_baseline_note_add_24"
+        android:src="@drawable/ic_baseline_edit_note_24"
         app:layout_constraintBottom_toTopOf="@id/constraint_bottom_bar"
         app:layout_constraintEnd_toEndOf="parent">
 

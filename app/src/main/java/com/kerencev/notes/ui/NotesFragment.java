@@ -27,6 +27,12 @@ import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.NoteName;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 
+import java.util.Date;
+
+/**
+ * Фрагмент для отрисовки выбранной заметки
+ */
+
 public class NotesFragment extends Fragment {
 
     public static final String ARG_NOTE = "ARG_NOTE";
@@ -74,6 +80,9 @@ public class NotesFragment extends Fragment {
         setRightColor(view);
     }
 
+    /**
+     * Устанавливаем правильный цвет фона
+     */
     private void setRightColor(View view) {
         switch (note.getColor()) {
             case R.color.yellow:
@@ -109,6 +118,7 @@ public class NotesFragment extends Fragment {
 
                 switch (item.getItemId()) {
                     case R.id.action_save:
+                        //Проверка является ли заметка новой или уже имеющейся
                         if (note.getDescription() != null) {
                             updateNote();
                         } else {
@@ -136,6 +146,11 @@ public class NotesFragment extends Fragment {
 
                                 }
                             });
+
+                            //Проверяем нужно ли сохранять в корзину
+                            if (StyleOfNotes.getINSTANCE(requireContext()).getIsSaveNotes()) {
+                                Dependencies.getNotesTrashRepository().addNote(note);
+                            }
                         }
 
                         getParentFragmentManager().popBackStack();
@@ -147,6 +162,11 @@ public class NotesFragment extends Fragment {
         });
     }
 
+    /**
+     * Метод для установки слушателя при нажатии на изменение цвета
+     *
+     * @param view
+     */
     private void setClicksBottomToolbar(View view) {
 
         bottomToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -221,32 +241,34 @@ public class NotesFragment extends Fragment {
 
         FragmentManager fragmentManager = getParentFragmentManager();
 
-        Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), note.getColor(), new Callback<Note>() {
-            @Override
-            public void onSuccess(Note data) {
-                String id = data.getId();
+        Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), note.getColor(), new Date(),
+                MyDate.getDate(),
+                new Callback<Note>() {
+                    @Override
+                    public void onSuccess(Note data) {
+                        String id = data.getId();
 
-                note.setID(id);
+                        note.setID(id);
 
-                if (title.getText().length() == 0) {
-                    note.setName(NoteName.setDefaultName(text.getText().toString()));
-                } else {
-                    note.setName(title.getText().toString());
-                }
+                        if (title.getText().length() == 0) {
+                            note.setName(NoteName.setDefaultName(text.getText().toString()));
+                        } else {
+                            note.setName(title.getText().toString());
+                        }
 
-                note.setDescription(text.getText().toString());
+                        note.setDescription(text.getText().toString());
 
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE, note);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE, note);
 
-                fragmentManager.setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
-            }
+                        fragmentManager.setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+                    }
 
-            @Override
-            public void onError(Throwable exception) {
+                    @Override
+                    public void onError(Throwable exception) {
 
-            }
-        });
+                    }
+                });
     }
 
 }

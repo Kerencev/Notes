@@ -1,6 +1,5 @@
 package com.kerencev.notes.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -16,9 +15,14 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 
+/**
+ * Фрагмент с настройками
+ */
+
 public class SettingsFragment extends Fragment {
 
-    private SwitchMaterial switchMaterial;
+    private SwitchMaterial switchMaterialShowDate;
+    private SwitchMaterial switchMaterialSaveNotes;
 
     private Toolbar toolbar;
 
@@ -59,18 +63,28 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        switchMaterial.setChecked(StyleOfNotes.getINSTANCE(requireContext()).isIsHasDate());
+        switchMaterialShowDate.setChecked(StyleOfNotes.getINSTANCE(requireContext()).isIsHasDate());
 
-        switchMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchMaterialShowDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 StyleOfNotes.getINSTANCE(requireContext()).setIsHasDate(b);
             }
         });
+
+        switchMaterialSaveNotes.setChecked(StyleOfNotes.getINSTANCE(requireContext()).getIsSaveNotes());
+
+        switchMaterialSaveNotes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                StyleOfNotes.getINSTANCE(requireContext()).setIsSaveNotes(b);
+            }
+        });
     }
 
     private void init(View view) {
-        switchMaterial = view.findViewById(R.id.switch_has_date);
+        switchMaterialShowDate = view.findViewById(R.id.switch_has_date);
+        switchMaterialSaveNotes = view.findViewById(R.id.switch_is_save_trash);
 
         toolbar = view.findViewById(R.id.toolbar);
 
