@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_yellow"
+        android:icon="@drawable/ic_baseline_opacity_24_yellow"
+        android:title="TODO"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_blue"
+        android:icon="@drawable/ic_baseline_opacity_24_blue"
+        android:title="TODO"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_green"
+        android:icon="@drawable/ic_baseline_opacity_24_green"
+        android:title="TODO"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_red"
+        android:icon="@drawable/ic_baseline_opacity_24_red"
+        android:title="TODO"
+        app:showAsAction="always" />
+</menu>

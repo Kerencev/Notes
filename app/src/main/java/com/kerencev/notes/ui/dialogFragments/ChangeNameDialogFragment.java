@@ -10,11 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.kerencev.notes.R;
+import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Note;
+import com.kerencev.notes.logic.memory.Data;
+import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.ui.NotesDescriptionFragment;
 import com.kerencev.notes.ui.NotesFragment;
+
+/**
+ * Диалог появляется, если нажата кнопка сменить имя
+ */
 
 public class ChangeNameDialogFragment extends DialogFragment {
 
@@ -42,11 +50,35 @@ public class ChangeNameDialogFragment extends DialogFragment {
         });
 
         customDialog.findViewById(R.id.action_confirm).setOnClickListener(new View.OnClickListener() {
+
+            FragmentManager fragmentManager = getParentFragmentManager();
+
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, newName.getText().toString()))
-                        .commit();
+
+                String name = note.getName();
+
+                if (newName.getText().length() > 0) {
+                    name = newName.getText().toString();
+                }
+
+                String finalName = name;
+                Dependencies.getNotesRepository().updateNote(note, finalName, note.getDescription(), new Callback<Note>() {
+                    @Override
+                    public void onSuccess(Note data) {
+                        note.setName(finalName);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(Data.KEY_BUNDLE_UPDATE_NOTE, note);
+
+                        fragmentManager.setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+                    }
+
+                    @Override
+                    public void onError(Throwable exception) {
+
+                    }
+                });
                 dismiss();
             }
         });

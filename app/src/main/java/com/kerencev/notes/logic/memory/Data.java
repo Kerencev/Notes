@@ -3,35 +3,32 @@ package com.kerencev.notes.logic.memory;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.kerencev.notes.logic.Note;
+import com.google.firebase.firestore.Query;
 
-import java.util.List;
+/**
+ * Класс для загрузки и сохранения выбранного отображения заметок
+ */
 
 public class Data {
 
-    private static final String KEY_SPREF = "KEY_SPREF";
     private static final String KEY_SPREF_STYLE = "KEY_SPREF_STYLE";
+    private static final String KEY_SPREF_HAS_DATE = "KEY_SPREF_HAS_DATE";
 
-    public static void save(SharedPreferences sharedPreferences, String notesJson) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_SPREF, notesJson);
-        editor.apply();
-    }
+    private static final String KEY_SPREF_SAVE_NOTES = "KEY_SPREF_SAVE_NOTES";
 
-    public static void load(SharedPreferences sharedPreferences, Context context) {
+    private static final String KEY_SPREF_DIRECTION_FOR_SORT = "KEY_SPREF_DIRECTION_FOR_SORT";
 
-        if (sharedPreferences.contains(KEY_SPREF)) {
-            String httpParamJSONList = sharedPreferences.getString(KEY_SPREF, "");
+    public static final String KEY_RESULT_CHANGE_RECYCLER = "KEY_RESULT_CHANGE_RECYCLER";
 
-            List<Note> notes1 =
-                    new Gson().fromJson(httpParamJSONList, new TypeToken<List<Note>>() {
-                    }.getType());
+    public static final String KEY_RESULT_CHANGE_RECYCLER_FOR_TRASH = "KEY_RESULT_CHANGE_RECYCLER_FOR_TRASH";
 
-            InMemoryNotesRepository.getINSTANCE(context).loadAll(notes1);
-        }
-    }
+    public static final String KEY_BUNDLE_ADD_NEW_NOTE = "KEY_BUNDLE_ADD_NEW_NOTE";
+    public static final String KEY_BUNDLE_DELETE_NOTE = "KEY_BUNDLE_DELETE_NOTE";
+    public static final String KEY_BUNDLE_UPDATE_NOTE = "KEY_BUNDLE_UPDATE_NOTE";
+
+    public static final String KEY_BUNDLE_DELETE_NOTE_FROM_TRASH = "KEY_BUNDLE_DELETE_NOTE_FROM_TRASH";
+
+    public static final String KEY_BUNDLE_SHOW_BOTTOM_BAR = "KEY_BUNDLE_SHOW_BOTTOM_BAR";
 
     public static void saveStyle(SharedPreferences sharedPreferences, String style) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -42,6 +39,53 @@ public class Data {
     public static void loadStyle(SharedPreferences sharedPreferences, Context context) {
         if (sharedPreferences.contains(KEY_SPREF_STYLE)) {
             StyleOfNotes.getINSTANCE(context).setStyle(sharedPreferences.getString(KEY_SPREF_STYLE, StyleOfNotes.STYLE_1));
+        }
+    }
+
+    public static void saveIsHasDate(SharedPreferences sharedPreferences, boolean isHasDate) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_SPREF_HAS_DATE, isHasDate);
+        editor.apply();
+    }
+
+    public static void loadIsHasDate(SharedPreferences sharedPreferences, Context context) {
+        if (sharedPreferences.contains(KEY_SPREF_HAS_DATE)) {
+            StyleOfNotes.getINSTANCE(context).setIsHasDate(sharedPreferences.getBoolean(KEY_SPREF_HAS_DATE, true));
+        }
+    }
+
+    public static void saveIsSaveNotes(SharedPreferences sharedPreferences, boolean isSaveNotes) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_SPREF_SAVE_NOTES, isSaveNotes);
+        editor.apply();
+    }
+
+    public static void loadIsSaveNotes(SharedPreferences sharedPreferences, Context context) {
+        if (sharedPreferences.contains(KEY_SPREF_SAVE_NOTES)) {
+            StyleOfNotes.getINSTANCE(context).setIsSaveNotes(sharedPreferences.getBoolean(KEY_SPREF_SAVE_NOTES, true));
+        }
+    }
+
+    public static void saveDirection(SharedPreferences sharedPreferences, Query.Direction direction, Context context) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (StyleOfNotes.getINSTANCE(context).getDirection().equals(Query.Direction.ASCENDING)) {
+            editor.putBoolean(KEY_SPREF_DIRECTION_FOR_SORT, false);
+        } else {
+            editor.putBoolean(KEY_SPREF_DIRECTION_FOR_SORT, true);
+        }
+
+        editor.apply();
+    }
+
+    public static void loadDirection(SharedPreferences sharedPreferences, Context context) {
+        if (sharedPreferences.contains(KEY_SPREF_DIRECTION_FOR_SORT)) {
+            if (sharedPreferences.getBoolean(KEY_SPREF_DIRECTION_FOR_SORT, true)) {
+
+                StyleOfNotes.getINSTANCE(context).setDirection(Query.Direction.DESCENDING);
+            } else {
+                StyleOfNotes.getINSTANCE(context).setDirection(Query.Direction.ASCENDING);
+            }
         }
     }
 }

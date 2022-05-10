@@ -4,16 +4,23 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.card.MaterialCardView;
 import com.kerencev.notes.R;
+import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Note;
-import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
-import com.kerencev.notes.ui.NotesDescriptionFragment;
+import com.kerencev.notes.logic.memory.Data;
+import com.kerencev.notes.logic.memory.Dependencies;
+import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.NotesFragment;
+
+/**
+ * Фрагмент появляется при удержании одной из заметок
+ */
 
 public class BottomSheetDialogFragment extends com.google.android.material.bottomsheet.BottomSheetDialogFragment {
 
@@ -42,9 +49,10 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
             note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
         }
 
-        LinearLayout edit = view.findViewById(R.id.action_edit);
-        LinearLayout delete = view.findViewById(R.id.action_delete);
-        LinearLayout rename = view.findViewById(R.id.action_rename);
+        MaterialCardView edit = view.findViewById(R.id.action_edit);
+        MaterialCardView delete = view.findViewById(R.id.action_delete);
+        MaterialCardView rename = view.findViewById(R.id.action_rename);
+        MaterialCardView color = view.findViewById(R.id.action_color);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,11 +65,30 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int indexOfNote = InMemoryNotesRepository.getINSTANCE(requireContext()).delete(note);
+
+                FragmentManager fragmentManager = getParentFragmentManager();
+
+                Dependencies.getNotesRepository().removeNote(note, new Callback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(Data.KEY_BUNDLE_DELETE_NOTE, note);
+
+                        fragmentManager.setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+                    }
+
+                    @Override
+                    public void onError(Throwable exception) {
+
+                    }
+                });
+
+                // Проверка, нужно ли добавлять заметку в корзину
+                if (StyleOfNotes.getINSTANCE(requireContext()).getIsSaveNotes()) {
+                    Dependencies.getNotesTrashRepository().addNote(note);
+                }
+
                 dismiss();
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, NotesDescriptionFragment.newInstance(note, indexOfNote))
-                        .commit();
             }
         });
 
@@ -72,11 +99,23 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
                 ChangeNameDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
             }
         });
+
+        color.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR, note);
+
+                getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+                dismiss();
+            }
+        });
     }
 
     private void showNote(Note note) {
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, NotesFragment.newInstance(note))
+                .hide(this)
+                .add(R.id.fragment_container, NotesFragment.newInstance(note))
                 .addToBackStack("details")
                 .commit();
     }

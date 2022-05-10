@@ -15,13 +15,22 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/margin_bottom_bar">
 
-        <TextView
-            android:id="@+id/text"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_card"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:background="@color/yellow"
-            android:padding="@dimen/margin_bottom_bar"
-            tools:text="dnsdjfnjsdnjsfnjsdfsdfdsfsdfsdfsdfsdfsdfsdfnjsndf" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:padding="@dimen/margin_bottom_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="dnsdjfnjsdnjsfnjsdfsdfdsfsdfsdfsdfsdfsdfsdfnjsndf" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 

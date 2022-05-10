@@ -1,81 +1,56 @@
 package com.kerencev.notes.ui;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.ActionMenuItem;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
+import com.google.firebase.firestore.Query;
 import com.kerencev.notes.R;
+import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.memory.Data;
-import com.kerencev.notes.logic.memory.InMemoryNotesRepository;
+import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.Note;
+import com.kerencev.notes.logic.memory.FireStoreNotesRepository;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
 
+import java.util.Date;
 import java.util.List;
+
+/**
+ * Главный фрагмент заметок
+ * Отрисовывается при заходе в приложение
+ */
 
 public class NotesDescriptionFragment extends Fragment {
 
-    private static final String INDEX_NOTE = "INDEX_NOTE";
-    private static final String NEW_NAME = "NEW_NAME";
-
-    public static final String ARG_PARAM1 = "param1";
-    public static final String ARG_PARAM2 = "param2";
     private Toolbar toolbar;
-    private static SharedPreferences sharedPreferences;
-    private String notesJson;
-    List<Note> notes;
 
-    /**
-     * Метод для передачи фрагменту заметки и ее индекса для восстановления после удаления
-     *
-     * @param note        - заметка, удаление которой можно отменить
-     * @param indexOfNote - индекс заметки, для восстановления в том же месте
-     */
-    public static NotesDescriptionFragment newInstance(Note note, int indexOfNote) {
-        Bundle args = new Bundle();
-        args.putParcelable(NotesFragment.ARG_NOTE, note);
-        args.putInt(INDEX_NOTE, indexOfNote);
-        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private NotesAdapter adapter;
 
-    /**
-     * Метод для передачи фрагменту заметки и нового названия
-     *
-     * @param note - заметка, у которой меняем название
-     * @param name - новое название
-     */
-    public static NotesDescriptionFragment newInstance(Note note, String name) {
-        Bundle args = new Bundle();
-        args.putParcelable(NotesFragment.ARG_NOTE, note);
-        args.putString(NEW_NAME, name);
-        NotesDescriptionFragment fragment = new NotesDescriptionFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ConstraintLayout bottomChangeColor;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        sharedPreferences = requireActivity().getSharedPreferences("Store_notes", Context.MODE_PRIVATE);
         super.onCreate(savedInstanceState);
     }
 
@@ -88,6 +63,9 @@ public class NotesDescriptionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        bottomChangeColor = view.findViewById(R.id.constraint_bottom_bar);
+
         initList(view);
         toolbar = view.findViewById(R.id.bar_main_add);
         setOnClickNewNote(view);
@@ -96,32 +74,10 @@ public class NotesDescriptionFragment extends Fragment {
             ((ToolbarHolder) requireActivity()).setToolbar(toolbar);
         }
 
-        if (getArguments() != null && getArguments().containsKey(NotesFragment.ARG_NOTE)) {
-            showSnackBartoCancelRemove(view);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        notesJson = new Gson().toJson(notes);
-        Data.save(sharedPreferences, notesJson);
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        notesJson = new Gson().toJson(notes);
-        Data.save(sharedPreferences, notesJson);
-        super.onDestroy();
+        setOnSortClick();
     }
 
     private void initList(View view) {
-
-        notes = InMemoryNotesRepository.getINSTANCE(requireContext()).getAll();
-
-        if (getArguments() != null && getArguments().containsKey(NEW_NAME)) {
-            changeNoteName(view);
-        }
 
         RecyclerView recyclerView = view.findViewById(R.id.container);
 
@@ -135,13 +91,25 @@ public class NotesDescriptionFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
 
-        NotesAdapter adapter = new NotesAdapter();
+        adapter = new NotesAdapter();
 
         recyclerView.setAdapter(adapter);
 
-        adapter.setData(notes);
+        Dependencies.getNotesRepository().getAll(FireStoreNotesRepository.NOTES,
+                StyleOfNotes.getINSTANCE(requireContext()).getDirection(), new Callback<List<Note>>() {
+                    @Override
+                    public void onSuccess(List<Note> data) {
+                        adapter.setData(data);
+                        adapter.notifyDataSetChanged();
+                    }
 
-        adapter.notifyDataSetChanged();
+                    @Override
+                    public void onError(Throwable exception) {
+
+                    }
+                });
+
+        notifyAdapter(adapter, view);
 
         adapter.setOnNoteClicked(new NotesAdapter.OnNoteClicked() {
             @Override
@@ -154,74 +122,192 @@ public class NotesDescriptionFragment extends Fragment {
                 BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
             }
         });
+
     }
 
+    /**
+     * Метод для изменения данных и передачи адаптеру информации об изменении
+     */
+    private void notifyAdapter(NotesAdapter adapter, View view) {
+
+        getParentFragmentManager().setFragmentResultListener(Data.KEY_RESULT_CHANGE_RECYCLER, getViewLifecycleOwner(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                if (result.containsKey(Data.KEY_BUNDLE_ADD_NEW_NOTE)) {
+
+                    if (StyleOfNotes.getINSTANCE(requireContext()).getDirection().equals(Query.Direction.DESCENDING)) {
+                        adapter.addFirst(result.getParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE));
+                        adapter.notifyItemInserted(0);
+                    } else {
+                        int index = adapter.addLast(result.getParcelable(Data.KEY_BUNDLE_ADD_NEW_NOTE));
+                        adapter.notifyItemInserted(index);
+                    }
+
+                } else if (result.containsKey(Data.KEY_BUNDLE_DELETE_NOTE)) {
+                    int indexOfRemoved = adapter.delete(result.getParcelable(Data.KEY_BUNDLE_DELETE_NOTE));
+                    adapter.notifyItemRemoved(indexOfRemoved);
+                } else if (result.containsKey(Data.KEY_BUNDLE_UPDATE_NOTE)) {
+                    int indexOfRemoved = adapter.updateNote(result.getParcelable(Data.KEY_BUNDLE_UPDATE_NOTE));
+                    adapter.notifyItemChanged(indexOfRemoved);
+                } else if (result.containsKey(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR)) {
+                    bottomChangeColor.setVisibility(View.VISIBLE);
+                    setOnClickChangeColor(view, result.getParcelable(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR));
+                }
+            }
+        });
+    }
+
+    /**
+     * Метод для отрисовки изменения цвета у заметки и сохранения цвета
+     */
+    private void setOnClickChangeColor(View view, Note note) {
+
+        view.findViewById(R.id.action_color_yellow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.yellow);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_color_blue).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.blue);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_color_green).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.green);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_color_red).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                note.setColor(R.color.red);
+                int indexOfChanged = adapter.updateNote(note);
+                adapter.notifyItemChanged(indexOfChanged);
+            }
+        });
+
+        view.findViewById(R.id.action_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dependencies.getNotesRepository().updateNote(note, note.getName(), note.getDescription(), new Callback<Note>() {
+                    @Override
+                    public void onSuccess(Note data) {
+                        bottomChangeColor.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable exception) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s.toString());
+                return false;
+            }
+        });
+    }
+
+
     private void setOnClickNewNote(View view) {
-        Note note = new Note(null, null, MyDate.getDate());
 
         view.findViewById(R.id.action_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Note note = new Note(null, null, null, MyDate.getDate(), StyleOfNotes.COLOR_YELLOW, new Date());
                 showNote(note);
             }
         });
+    }
 
+    private void showNote(Note note) {
+        getParentFragmentManager().beginTransaction()
+                .hide(this)
+                .add(R.id.fragment_container, NotesFragment.newInstance(note))
+                .addToBackStack("details")
+                .commit();
+    }
+
+
+    /**
+     * Метод для установки слушателя на кнопку сортировки
+     */
+    private void setOnSortClick() {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_search) {
-                    Toast.makeText(requireContext(), "search", Toast.LENGTH_SHORT).show();
-                    return true;
+                switch (item.getItemId()) {
+                    case R.id.action_sort:
+
+                        adapter.clearData();
+                        switchDirection(item);
+
+                        Dependencies.getNotesRepository().getAll(FireStoreNotesRepository.NOTES,
+                                StyleOfNotes.getINSTANCE(requireContext()).getDirection(), new Callback<List<Note>>() {
+                                    @Override
+                                    public void onSuccess(List<Note> data) {
+                                        adapter.setData(data);
+                                        adapter.notifyDataSetChanged();
+                                        makeToast();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable exception) {
+                                    }
+                                });
+                        return true;
                 }
                 return false;
             }
         });
     }
 
-    private void showNote(Note note) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ARG_PARAM2, note);
-            getParentFragmentManager()
-                    .setFragmentResult(ARG_PARAM1, bundle);
+    private void makeToast() {
+        if (StyleOfNotes.getINSTANCE(requireContext()).getDirection().equals(Query.Direction.ASCENDING)) {
+            Toast.makeText(requireContext(), "По возрастанию", Toast.LENGTH_SHORT).show();
         } else {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, NotesFragment.newInstance(note))
-                    .addToBackStack("details")
-                    .commit();
+            Toast.makeText(requireContext(), "По убыванию", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public static SharedPreferences getMySharedPreferences() {
-        return sharedPreferences;
-    }
-
-    private void showSnackBartoCancelRemove(View view) {
-        Note note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
-        int indexOfNote = getArguments().getInt(INDEX_NOTE);
-
-        getArguments().clear();
-
-        Snackbar.make(view, "Заметка '" + note.getName() + "' удалена", Snackbar.LENGTH_SHORT)
-                .setAction(R.string.cancel, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        InMemoryNotesRepository.getINSTANCE(requireContext()).add(indexOfNote, note);
-                        getParentFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new NotesDescriptionFragment())
-                                .commit();
-                    }
-                }).show();
-    }
-
-    private void changeNoteName(View view) {
-        Note note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
-        String name = getArguments().getString(NEW_NAME);
-        for (Note n : notes) {
-            if (note.equals(n)) {
-                n.setName(name);
-            }
+    private void switchDirection(MenuItem item) {
+        if (StyleOfNotes.getINSTANCE(requireContext()).getDirection().equals(Query.Direction.ASCENDING)) {
+            StyleOfNotes.getINSTANCE(requireContext()).setDirection(Query.Direction.DESCENDING);
+            item.setIcon(R.drawable.ic_baseline_trending_down_24);
+        } else {
+            StyleOfNotes.getINSTANCE(requireContext()).setDirection(Query.Direction.ASCENDING);
+            item.setIcon(R.drawable.ic_baseline_trending_up_24);
         }
-        getArguments().clear();
     }
 }

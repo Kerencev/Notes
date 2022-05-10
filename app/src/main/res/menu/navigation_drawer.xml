@@ -6,6 +6,11 @@
         android:title="@string/notes" />
 
     <item
+        android:id="@+id/trash"
+        android:icon="@drawable/ic_baseline_delete_sweep_24"
+        android:title="@string/trash" />
+
+    <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/settings" />

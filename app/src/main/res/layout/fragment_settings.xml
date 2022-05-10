@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/margin_bottom_bar"
         android:gravity="center"
         android:text="@string/style_of_displaying_notes"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar" />
@@ -110,6 +110,48 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/settings_item1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/style1"
+        android:background="@drawable/back_settings_item"
+        android:layout_marginTop="12dp">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_has_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_date"
+            android:textSize="20sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"/>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/settings_item2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/settings_item1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/back_settings_item"
+        android:layout_marginTop="12dp">
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_is_save_trash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_deleted_notes"
+        android:textSize="16sp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"/>
 
     </com.google.android.material.card.MaterialCardView>
 
