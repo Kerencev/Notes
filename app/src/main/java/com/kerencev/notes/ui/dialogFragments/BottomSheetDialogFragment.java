@@ -1,9 +1,11 @@
 package com.kerencev.notes.ui.dialogFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,16 +51,26 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
             note = getArguments().getParcelable(NotesFragment.ARG_NOTE);
         }
 
-        MaterialCardView edit = view.findViewById(R.id.action_edit);
+        MaterialCardView fix = view.findViewById(R.id.action_fix);
         MaterialCardView delete = view.findViewById(R.id.action_delete);
         MaterialCardView rename = view.findViewById(R.id.action_rename);
         MaterialCardView color = view.findViewById(R.id.action_color);
+        MaterialCardView select = view.findViewById(R.id.action_choose);
 
-        edit.setOnClickListener(new View.OnClickListener() {
+        fix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showNote(note);
+
+                note.setFixed(!note.isFixed());
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_FIX_NOTE, note);
+
+                getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
                 dismiss();
+
+//                showNote(note);
+//                dismiss();
             }
         });
 
@@ -105,6 +117,18 @@ public class BottomSheetDialogFragment extends com.google.android.material.botto
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR, note);
+
+                getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
+                dismiss();
+            }
+        });
+
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Data.KEY_BUNDLE_SHOW_FOR_SELECT, null);
 
                 getParentFragmentManager().setFragmentResult(Data.KEY_RESULT_CHANGE_RECYCLER, bundle);
                 dismiss();

@@ -7,12 +7,13 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/margin_main_fragment"
     android:layout_marginVertical="@dimen/margin_main_fragment"
-    app:cardCornerRadius="@dimen/margin_bottom_bar">
+    app:cardCornerRadius="@dimen/padding_bar">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/back_fixed_note_yellow"
         android:padding="@dimen/margin_main_fragment">
 
         <TextView
@@ -34,10 +35,10 @@
             android:layout_marginStart="@dimen/margin_start_text_notes_list"
             android:maxLines="3"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            tools:text="ывиарыавр ываирлывиа nfdjnjfjdnjdfjjndsdfsdfsdfdfssdfdsdfsdfnjjnsjdfnj ывиаоиыва dfdfdfjnjjdfjdjfnjnsdfjnfdsnfnnsjdfnjdsnjfndsjnfjdsnfjnsdjfnjnjdnfjnsdnsdjfnjsdnjsfnjsdfsdfdsfsdfsdfsdfsdfsdfsdfnjsndf" />
+            tools:text="sdfsdfsdfnjsndf" />
 
         <TextView
             android:id="@+id/date"
@@ -48,6 +49,25 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="10.04" />
 
+        <ImageView
+            android:id="@+id/radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_radio_button_unchecked_24"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/pin"
+            android:layout_width="@dimen/size_drawable_pin"
+            android:layout_height="@dimen/size_drawable_pin"
+            android:src="@drawable/pin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </com.google.android.material.card.MaterialCardView>

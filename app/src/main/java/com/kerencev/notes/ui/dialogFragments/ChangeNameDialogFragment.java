@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
+import com.kerencev.notes.logic.Keyboard;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;

@@ -4,6 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_add_icon.xml" value="0.1755" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_fixed_note.xml" value="0.141" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_fixed_note_blue.xml" value="0.141" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_fixed_note_green.xml" value="0.141" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_fixed_note_red.xml" value="0.141" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_fixed_note_yellow.xml" value="0.141" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_nav_drawer.xml" value="0.109" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/back_settings_item.xml" value="0.1565" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/background_note.xml" value="0.1755" />
@@ -12,12 +17,16 @@
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_done_outline_24.xml" value="0.1435" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1275" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_edit_note_24.xml" value="0.1335" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_filter_list_24.xml" value="0.141" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_grid_on_24.xml" value="0.141" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_note_add_24.xml" value="0.1755" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_notes_24.xml" value="0.141" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_opacity_24_blue.xml" value="0.1435" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_opacity_24_green.xml" value="0.1435" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_opacity_24_red.xml" value="0.1435" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_opacity_24_yellow.xml" value="0.1435" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_palette_24.xml" value="0.1435" />
+        <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_radio_button_checked_green.xml" value="0.141" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_baseline_save_24.xml" value="0.1755" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1755" />
         <entry key="..\:/Users/Keren/AndroidStudioProjects/Notes/app/src/main/res/layout-land/activity_main.xml" value="0.2947916666666667" />

@@ -9,4 +9,7 @@
     <dimen name="size_pic">100dp</dimen>
     <dimen name="size_radio_button">32dp</dimen>
     <dimen name="margin_bottom_bar">12dp</dimen>
+    <dimen name="height_text_grid">140dp</dimen>
+    <dimen name="text_size_from_select">12sp</dimen>
+    <dimen name="size_drawable_pin">16dp</dimen>
 </resources>

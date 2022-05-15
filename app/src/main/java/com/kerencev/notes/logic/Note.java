@@ -15,8 +15,11 @@ public class Note implements Parcelable {
     private final String date;
     private int color;
     private String id;
+    private boolean isSelected;
 
     private Date dateForSort;
+
+    private boolean isFixed;
 
     public Note(String id, String name, String description, String date, int color, Date dateForSort) {
         this.id = id;
@@ -25,6 +28,8 @@ public class Note implements Parcelable {
         this.date = date;
         this.color = color;
         this.dateForSort = dateForSort;
+        this.isSelected = false;
+        this.isFixed = false;
     }
 
 
@@ -34,6 +39,8 @@ public class Note implements Parcelable {
         date = in.readString();
         color = in.readInt();
         id = in.readString();
+        isSelected = in.readByte() != 0;
+        isFixed = in.readByte() != 0;
     }
 
     @Override
@@ -43,6 +50,8 @@ public class Note implements Parcelable {
         dest.writeString(date);
         dest.writeInt(color);
         dest.writeString(id);
+        dest.writeByte((byte) (isSelected ? 1 : 0));
+        dest.writeByte((byte) (isFixed ? 1 : 0));
     }
 
     @Override
@@ -108,17 +117,33 @@ public class Note implements Parcelable {
         this.dateForSort = dateForSort;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isFixed() {
+        return isFixed;
+    }
+
+    public void setFixed(boolean fixed) {
+        isFixed = fixed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return color == note.color && Objects.equals(name, note.name) && Objects.equals(Description, note.Description) && Objects.equals(date, note.date) && Objects.equals(id, note.id) && Objects.equals(dateForSort, note.dateForSort);
+        return color == note.color && isSelected == note.isSelected && isFixed == note.isFixed && Objects.equals(name, note.name) && Objects.equals(Description, note.Description) && Objects.equals(date, note.date) && Objects.equals(id, note.id) && Objects.equals(dateForSort, note.dateForSort);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, Description, date, color, id, dateForSort);
+        return Objects.hash(name, Description, date, color, id, isSelected, dateForSort, isFixed);
     }
 }
 

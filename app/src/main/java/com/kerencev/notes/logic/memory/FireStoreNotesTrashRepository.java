@@ -30,6 +30,7 @@ public class FireStoreNotesTrashRepository {
         data.put(FireStoreNotesRepository.KEY_CREATED_AT, note.getDate());
         data.put(FireStoreNotesRepository.KEY_COLOR, String.valueOf(note.getColor()));
         data.put("DATE", note.getDateForSort());
+        data.put(FireStoreNotesRepository.KEY_IS_FIXED, false);
 
         firestore.collection(TRASH).add(data);
     }

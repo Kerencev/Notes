@@ -1,10 +1,13 @@
 package com.kerencev.notes.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.ActionMenuItem;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -13,19 +16,26 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
+import com.kerencev.notes.logic.Keyboard;
 import com.kerencev.notes.logic.MyDate;
+import com.kerencev.notes.logic.Search;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.Note;
@@ -33,6 +43,7 @@ import com.kerencev.notes.logic.memory.FireStoreNotesRepository;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +60,16 @@ public class NotesDescriptionFragment extends Fragment {
 
     private ConstraintLayout bottomChangeColor;
 
+    private FloatingActionButton addOrDelete;
+
+    private ConstraintLayout selectedNotesBar;
+
+    private ConstraintLayout searchBar;
+
+    private MaterialCardView selectAll;
+    private MaterialCardView clearAll;
+    private MaterialCardView cancel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,17 +85,40 @@ public class NotesDescriptionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        bottomChangeColor = view.findViewById(R.id.constraint_bottom_bar);
+        initialize(view);
+
+        setOnClick();
 
         initList(view);
-        toolbar = view.findViewById(R.id.bar_main_add);
+
         setOnClickNewNote(view);
 
         if (requireActivity() instanceof ToolbarHolder) {
             ((ToolbarHolder) requireActivity()).setToolbar(toolbar);
         }
 
-        setOnSortClick();
+        setOnBarClick(view);
+    }
+
+    private void initialize(View view) {
+        bottomChangeColor = view.findViewById(R.id.constraint_bottom_bar);
+
+        addOrDelete = view.findViewById(R.id.action_add);
+
+        selectAll = view.findViewById(R.id.select_all);
+        clearAll = view.findViewById(R.id.clear_all);
+        cancel = view.findViewById(R.id.action_cancel);
+        selectedNotesBar = view.findViewById(R.id.bar_selected_notes);
+
+        toolbar = view.findViewById(R.id.bar_main_add);
+
+        searchBar = view.findViewById(R.id.search_bar);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        NotesAdapter.isForSelect = false;
     }
 
     private void initList(View view) {
@@ -114,12 +158,27 @@ public class NotesDescriptionFragment extends Fragment {
         adapter.setOnNoteClicked(new NotesAdapter.OnNoteClicked() {
             @Override
             public void onNoteClicked(Note note) {
-                showNote(note);
+                if (NotesAdapter.isForSelect) {
+                    if (note.isSelected()) {
+                        note.setSelected(false);
+                    } else {
+                        note.setSelected(true);
+                    }
+                    int indexOfUpdated = adapter.updateNote(note);
+                    adapter.notifyItemChanged(indexOfUpdated);
+                } else {
+                    showNote(note);
+                }
             }
 
             @Override
             public void onLongNoteClicked(Note note) {
-                BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
+                if (!NotesAdapter.isForSelect) {
+
+                    Keyboard.hideKeyBoard(requireActivity(), view.findViewById(R.id.search));
+
+                    BottomSheetDialogFragment.newInstance(note).show(getParentFragmentManager(), "");
+                }
             }
         });
 
@@ -152,6 +211,39 @@ public class NotesDescriptionFragment extends Fragment {
                 } else if (result.containsKey(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR)) {
                     bottomChangeColor.setVisibility(View.VISIBLE);
                     setOnClickChangeColor(view, result.getParcelable(Data.KEY_BUNDLE_SHOW_BOTTOM_BAR));
+                } else if (result.containsKey(Data.KEY_BUNDLE_SHOW_FOR_SELECT)) {
+                    selectedNotesBar.setVisibility(View.VISIBLE);
+                    addOrDelete.setImageResource(R.drawable.ic_baseline_delete_24);
+
+                    NotesAdapter.isForSelect = true;
+                    adapter.notifyDataSetChanged();
+                } else if (result.containsKey(Data.KEY_BUNDLE_FIX_NOTE)) {
+                    Note note = result.getParcelable(Data.KEY_BUNDLE_FIX_NOTE);
+
+                    Dependencies.getNotesRepository().updateNote(note, note.getName(), note.getDescription(), new Callback<Note>() {
+                        @Override
+                        public void onSuccess(Note data) {
+                            Dependencies.getNotesRepository().getAll(FireStoreNotesRepository.NOTES,
+                                    StyleOfNotes.getINSTANCE(requireContext()).getDirection(), new Callback<List<Note>>() {
+                                        @Override
+                                        public void onSuccess(List<Note> data) {
+                                            adapter.clearData();
+                                            adapter.setData(data);
+                                            adapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable exception) {
+
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onError(Throwable exception) {
+
+                        }
+                    });
                 }
             }
         });
@@ -216,37 +308,23 @@ public class NotesDescriptionFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.menu_main, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                adapter.getFilter().filter(s.toString());
-                return false;
-            }
-        });
-    }
-
-
     private void setOnClickNewNote(View view) {
 
         view.findViewById(R.id.action_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Note note = new Note(null, null, null, MyDate.getDate(), StyleOfNotes.COLOR_YELLOW, new Date());
-                showNote(note);
+                if (NotesAdapter.isForSelect) {
+                    selectedNotesBar.setVisibility(View.GONE);
+
+                    adapter.deleteSelectedNotes(requireContext());
+                    NotesAdapter.isForSelect = false;
+
+                    addOrDelete.setImageResource(R.drawable.ic_baseline_edit_note_24);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Note note = new Note(null, null, null, MyDate.getDate(), StyleOfNotes.COLOR_YELLOW, new Date());
+                    showNote(note);
+                }
             }
         });
     }
@@ -263,7 +341,7 @@ public class NotesDescriptionFragment extends Fragment {
     /**
      * Метод для установки слушателя на кнопку сортировки
      */
-    private void setOnSortClick() {
+    private void setOnBarClick(View view) {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -287,6 +365,12 @@ public class NotesDescriptionFragment extends Fragment {
                                     }
                                 });
                         return true;
+
+                    case R.id.action_search:
+                        selectedNotesBar.setVisibility(View.INVISIBLE);
+                        searchBar.setVisibility(View.VISIBLE);
+                        Search search = new Search(requireActivity(), getParentFragmentManager(), view, adapter);
+                        search.initSearch();
                 }
                 return false;
             }
@@ -309,5 +393,46 @@ public class NotesDescriptionFragment extends Fragment {
             StyleOfNotes.getINSTANCE(requireContext()).setDirection(Query.Direction.ASCENDING);
             item.setIcon(R.drawable.ic_baseline_trending_up_24);
         }
+    }
+
+    /**
+     * Установка слушателя на кнопку выбрать всё
+     */
+    private void setOnClick() {
+
+        selectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.selectAll();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        clearAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.clearAllSelectedNotes();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedNotesBar.setVisibility(View.GONE);
+
+                adapter.clearAllSelectedNotes();
+
+                NotesAdapter.isForSelect = false;
+
+                addOrDelete.setImageResource(R.drawable.ic_baseline_edit_note_24);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void hideKeyboard() {
+//        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(vi.getWindowToken(), 0);
     }
 }
