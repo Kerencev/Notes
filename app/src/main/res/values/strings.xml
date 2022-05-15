@@ -31,5 +31,9 @@
     <string name="save_deleted_notes">Сохранять удалённые заметки в корзину</string>
     <string name="sort">Сортировка</string>
     <string name="sort_date">Сортировка по дате создания</string>
+    <string name="choose">Выбрать</string>
+    <string name="select_all">Выбрать всё</string>
+    <string name="clear_all">Очистить</string>
+    <string name="fix">Закр/Откр</string>
 
 </resources>

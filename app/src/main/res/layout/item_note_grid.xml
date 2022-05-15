@@ -13,22 +13,41 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/margin_bottom_bar">
+        app:cardCornerRadius="@dimen/padding_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/pin"
+                android:layout_width="@dimen/size_drawable_pin"
+                android:layout_height="@dimen/size_drawable_pin"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/pin"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:padding="@dimen/margin_bottom_bar"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/height_text_grid"
+                android:padding="@dimen/margin_main_fragment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="dnsdjfnjsdnjsfnjsdfsdfdsfsdfsdfsdfsdfsdfsdfnjsndf" />
+
+            <ImageView
+                android:id="@+id/radio_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_main_fragment"
+                android:src="@drawable/ic_baseline_radio_button_unchecked_24"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

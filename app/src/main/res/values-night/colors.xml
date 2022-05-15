@@ -14,4 +14,5 @@
     <color name="red">#90FF6162</color>
     <color name="green">#900EFFB0</color>
     <color name="bottom_bar">#000000</color>
+    <color name="stroke_fixed_notes">#FFFFFF</color>
 </resources>

@@ -25,6 +25,8 @@ public class Data {
     public static final String KEY_BUNDLE_ADD_NEW_NOTE = "KEY_BUNDLE_ADD_NEW_NOTE";
     public static final String KEY_BUNDLE_DELETE_NOTE = "KEY_BUNDLE_DELETE_NOTE";
     public static final String KEY_BUNDLE_UPDATE_NOTE = "KEY_BUNDLE_UPDATE_NOTE";
+    public static final String KEY_BUNDLE_SHOW_FOR_SELECT = "KEY_BUNDLE_SHOW_FOR_SELECT";
+    public static final String KEY_BUNDLE_FIX_NOTE = "KEY_BUNDLE_FIX_NOTE";
 
     public static final String KEY_BUNDLE_DELETE_NOTE_FROM_TRASH = "KEY_BUNDLE_DELETE_NOTE_FROM_TRASH";
 
@@ -81,7 +83,6 @@ public class Data {
     public static void loadDirection(SharedPreferences sharedPreferences, Context context) {
         if (sharedPreferences.contains(KEY_SPREF_DIRECTION_FOR_SORT)) {
             if (sharedPreferences.getBoolean(KEY_SPREF_DIRECTION_FOR_SORT, true)) {
-
                 StyleOfNotes.getINSTANCE(context).setDirection(Query.Direction.DESCENDING);
             } else {
                 StyleOfNotes.getINSTANCE(context).setDirection(Query.Direction.ASCENDING);

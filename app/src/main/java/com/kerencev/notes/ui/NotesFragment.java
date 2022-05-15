@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
+import com.kerencev.notes.logic.Keyboard;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.MyDate;
@@ -68,6 +69,7 @@ public class NotesFragment extends Fragment {
         toolbar = view.findViewById(R.id.toolbar);
         bottomToolbar = view.findViewById(R.id.bottom_toolbar);
         constraintLayout = view.findViewById(R.id.container3);
+
         setClicksToolbar();
 
         setClicksBottomToolbar(view);
@@ -75,6 +77,10 @@ public class NotesFragment extends Fragment {
         if (getArguments() != null && getArguments().containsKey(ARG_NOTE)) {
             note = getArguments().getParcelable(ARG_NOTE);
             showNote(note);
+        }
+
+        if (note.getDescription() == null) {
+            Keyboard.showKeyBoard(requireActivity(), text);
         }
 
         setRightColor(view);
@@ -107,7 +113,7 @@ public class NotesFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideKeyboard();
+                Keyboard.hideKeyBoard(requireActivity(), text);
                 getParentFragmentManager().popBackStack();
             }
         });
@@ -125,7 +131,7 @@ public class NotesFragment extends Fragment {
                             saveNewNote();
                         }
 
-                        hideKeyboard();
+                        Keyboard.hideKeyBoard(requireActivity(), text);
                         getParentFragmentManager().popBackStack();
                         return true;
 
@@ -154,7 +160,7 @@ public class NotesFragment extends Fragment {
                         }
 
                         getParentFragmentManager().popBackStack();
-                        hideKeyboard();
+                        Keyboard.hideKeyBoard(requireActivity(), text);
                         return true;
                 }
                 return false;
@@ -210,11 +216,6 @@ public class NotesFragment extends Fragment {
         text.setText(note.getDescription());
     }
 
-    private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(text.getWindowToken(), 0);
-    }
-
     private void updateNote() {
 
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -240,6 +241,11 @@ public class NotesFragment extends Fragment {
     private void saveNewNote() {
 
         FragmentManager fragmentManager = getParentFragmentManager();
+
+        if (title.getText().length() == 0 && text.getText().length() == 0) {
+            fragmentManager.popBackStack();
+            return;
+        }
 
         Dependencies.getNotesRepository().addNote(title.getText().toString(), text.getText().toString(), note.getColor(), new Date(),
                 MyDate.getDate(),
