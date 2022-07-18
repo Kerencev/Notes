@@ -1,20 +1,20 @@
 package com.kerencev.notes.ui;
 
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.MenuItem;
-
 import com.google.android.material.navigation.NavigationView;
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
+import com.kerencev.notes.ui.todo.ToDoListFragment;
 
 public class MainActivity extends AppCompatActivity implements ToolbarHolder {
 

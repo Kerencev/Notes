@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +13,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
-import com.kerencev.notes.logic.Keyboard;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;
-import com.kerencev.notes.ui.NotesDescriptionFragment;
 import com.kerencev.notes.ui.NotesFragment;
 
 /**

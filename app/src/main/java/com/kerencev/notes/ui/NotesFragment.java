@@ -1,31 +1,26 @@
 package com.kerencev.notes.ui;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
-
-import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Keyboard;
-import com.kerencev.notes.logic.memory.Data;
-import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.MyDate;
 import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.NoteName;
+import com.kerencev.notes.logic.memory.Data;
+import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 
 import java.util.Date;

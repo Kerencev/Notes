@@ -12,4 +12,8 @@
     <dimen name="height_text_grid">140dp</dimen>
     <dimen name="text_size_from_select">12sp</dimen>
     <dimen name="size_drawable_pin">16dp</dimen>
+    <dimen name="margin_bottom_image_collapsing_bar">60dp</dimen>
+    <dimen name="margin_top_check_box">12dp</dimen>
+    <dimen name="margin_start_date_todo">8dp</dimen>
+    <dimen name="margin_horizontal_text_todo">12dp</dimen>
 </resources>

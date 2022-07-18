@@ -20,8 +20,6 @@ import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;
 import com.kerencev.notes.logic.memory.FireStoreNotesTrashRepository;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
-import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
-import com.kerencev.notes.ui.dialogFragments.ChangeNameDialogFragment;
 import com.kerencev.notes.ui.dialogFragments.TrashDialogFragment;
 
 import java.util.ArrayList;

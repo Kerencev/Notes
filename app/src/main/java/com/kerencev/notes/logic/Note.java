@@ -3,8 +3,6 @@ package com.kerencev.notes.logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.kerencev.notes.logic.memory.StyleOfNotes;
-
 import java.util.Date;
 import java.util.Objects;
 

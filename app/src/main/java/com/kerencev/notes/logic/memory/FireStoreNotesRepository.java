@@ -1,8 +1,5 @@
 package com.kerencev.notes.logic.memory;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -18,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class FireStoreNotesRepository implements NotesRepository {
 

@@ -1,13 +1,14 @@
 package com.kerencev.notes.ui;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.menu.ActionMenuItem;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -16,18 +17,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
@@ -35,15 +24,14 @@ import com.kerencev.notes.R;
 import com.kerencev.notes.logic.Callback;
 import com.kerencev.notes.logic.Keyboard;
 import com.kerencev.notes.logic.MyDate;
+import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.Search;
 import com.kerencev.notes.logic.memory.Data;
 import com.kerencev.notes.logic.memory.Dependencies;
-import com.kerencev.notes.logic.Note;
 import com.kerencev.notes.logic.memory.FireStoreNotesRepository;
 import com.kerencev.notes.logic.memory.StyleOfNotes;
 import com.kerencev.notes.ui.dialogFragments.BottomSheetDialogFragment;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
