@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/margin_main_fragment"
     android:layout_marginVertical="@dimen/margin_main_fragment"
-    app:cardCornerRadius="@dimen/padding_bar">
+    app:cardCornerRadius="@dimen/padding_bar"
+    app:cardElevation="@dimen/margin_bottom_bar">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_card"
@@ -63,9 +64,9 @@
             android:layout_width="@dimen/size_drawable_pin"
             android:layout_height="@dimen/size_drawable_pin"
             android:src="@drawable/pin"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

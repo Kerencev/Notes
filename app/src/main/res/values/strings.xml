@@ -35,5 +35,6 @@
     <string name="select_all">Выбрать всё</string>
     <string name="clear_all">Очистить</string>
     <string name="fix">Закр/Откр</string>
+    <string name="todo">Список дел</string>
 
 </resources>

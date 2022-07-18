@@ -68,6 +68,13 @@ public class MainActivity extends AppCompatActivity implements ToolbarHolder {
                         drawerLayout.close();
                         return true;
 
+                    case R.id.todo:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new ToDoListFragment())
+                                .commit();
+                        drawerLayout.close();
+                        return true;
+
                     case R.id.settings:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new SettingsFragment())

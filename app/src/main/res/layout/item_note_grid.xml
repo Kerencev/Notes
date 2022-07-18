@@ -13,7 +13,8 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/padding_bar">
+        app:cardCornerRadius="@dimen/padding_bar"
+        app:cardElevation="@dimen/margin_bottom_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_card"
